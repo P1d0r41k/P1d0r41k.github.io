@@ -204,6 +204,18 @@ button:not(nav button):active {
     transform: translateY(1px);
 }
 
+/* Строка сетевого статуса */
+.sync-badge {
+    display: inline-block;
+    font-size: 12px;
+    color: var(--text-muted);
+    margin-top: 12px;
+    padding: 4px 8px;
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: 6px;
+    border: 1px solid var(--border-color);
+}
+
 /* Маленькие кнопки в списке */
 button.small {
     margin-top: 0;
@@ -487,6 +499,8 @@ button.small:last-of-type:hover {
 <input id="e" placeholder="Перевод на Английский (для базы)">
 
 <button onclick="addWord()">Добавить слово</button>
+<br>
+<span id="syncStatus" class="sync-badge">Облако: синхронизация...</span>
 </div>
 
 <div class="card" id="list"></div>
@@ -499,16 +513,69 @@ document.querySelectorAll('.section').forEach(s => s.classList.remove('active'))
 document.getElementById(id).classList.add('active');
 }
 
-// словарь
-let dict = JSON.parse(localStorage.getItem("dict") || "[]");
+// Публичный защищенный адрес для авто-хранилища словаря Валёры
+const DB_URL = "https://kvbin.com/api/v1/bins/valera_global_dictionary";
+let dict = [];
 
-function save(){
-localStorage.setItem("dict", JSON.stringify(dict));
-render();
+// Автоматическая загрузка данных при открытии сайта
+async function loadFromServer() {
+    const statusEl = document.getElementById("syncStatus");
+    // Сначала быстро грузим локальные данные на случай оффлайна
+    dict = JSON.parse(localStorage.getItem("dict") || "[]");
+    render();
+
+    try {
+        statusEl.innerText = "Облако: загрузка базы...";
+        statusEl.style.color = "var(--text-muted)";
+        
+        const response = await fetch(DB_URL);
+        if (response.ok) {
+            const serverData = await response.json();
+            if (Array.isArray(serverData)) {
+                dict = serverData;
+                localStorage.setItem("dict", JSON.stringify(dict));
+                render();
+                statusEl.innerText = "Облако: синхронизировано успешно";
+                statusEl.style.color = "var(--accent)";
+                return;
+            }
+        }
+        statusEl.innerText = "Облако: база готова (первый запуск)";
+    } catch (e) {
+        console.log("Оффлайн-режим или первый запуск:", e);
+        statusEl.innerText = "Облако: автономный режим (нет сети)";
+        statusEl.style.color = "var(--accent-danger)";
+    }
+}
+
+// Автоматическое сохранение данных в облако при любых изменениях
+async function save(){
+    localStorage.setItem("dict", JSON.stringify(dict));
+    render();
+
+    const statusEl = document.getElementById("syncStatus");
+    try {
+        statusEl.innerText = "Облако: сохранение...";
+        statusEl.style.color = "var(--text-muted)";
+        
+        await fetch(DB_URL, {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(dict)
+        });
+        
+        statusEl.innerText = "Облако: данные обновлены везде!";
+        statusEl.style.color = "var(--accent)";
+    } catch (e) {
+        statusEl.innerText = "Облако: ошибка отправки. Сохранено локально.";
+        statusEl.style.color = "var(--accent-danger)";
+    }
 }
 
 function addWord(){
+if(!v.value) return; // Проверка на пустые строки
 dict.push({v:v.value, r:r.value, e:e.value});
+v.value = ""; r.value = ""; e.value = "";
 save();
 }
 
@@ -527,8 +594,10 @@ save();
 
 // УДАЛЕНИЕ
 function deleteWord(i){
+if(confirm("Удалить это слово?")) {
 dict.splice(i, 1);
 save();
+}
 }
 
 function render(){
@@ -543,7 +612,8 @@ list.innerHTML = dict.map((d,i)=>
 ).join("");
 }
 
-render();
+// Старт синхронизации при загрузке
+loadFromServer();
 </script>
 
 </body>
