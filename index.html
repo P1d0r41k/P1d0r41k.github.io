@@ -165,6 +165,16 @@ nav button:focus {
     font-style: italic;
 }
 
+.card ul {
+    margin: 10px 0;
+    padding-left: 20px;
+    color: var(--text-main);
+}
+
+.card li {
+    margin-bottom: 8px;
+}
+
 .symbol {
     font-size: 28px;
     color: var(--accent);
@@ -174,6 +184,27 @@ nav button:focus {
     border-bottom: 2px solid var(--accent);
     padding-bottom: 2px;
     line-height: 1;
+}
+
+.gram-formula {
+    background: rgba(138, 211, 255, 0.05);
+    border-left: 3px solid var(--accent);
+    padding: 12px 16px;
+    border-radius: 0 8px 8px 0;
+    margin: 14px 0;
+    font-weight: 500;
+}
+
+.gram-example {
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid var(--border-color);
+    padding: 14px;
+    border-radius: 10px;
+    margin-top: 10px;
+}
+
+.gram-example p {
+    margin: 4px 0;
 }
 
 input {
@@ -402,6 +433,7 @@ button.small:last-of-type:hover {
 <button id="nav-home" data-t="nav_home" onclick="show('home')">Главная</button>
 <button id="nav-cyr" data-t="nav_cyr" onclick="show('cyr')">Кириллица</button>
 <button id="nav-geez" data-t="nav_geez" onclick="show('geez')">Гыыз</button>
+<button id="nav-grammar" data-t="nav_grammar" onclick="show('grammar')">Грамматика</button>
 <button id="nav-dict" data-t="nav_dict" onclick="show('dict')">Словарь</button>
 <div class="lang-switcher">
     <button class="lang-btn active-lang" onclick="changeLang('ru')">RU</button>
@@ -434,7 +466,7 @@ button.small:last-of-type:hover {
 <p>Ж ж — [ж]</p>
 <p>З з — [з]</p>
 <p>Й й — [й]</p>
-<p>К к — [к]</p>
+<p>К k — [к]</p>
 <p>Л л — [л]</p>
 <p>М м — [м]</p>
 <p>Н н — [н]</p>
@@ -456,7 +488,7 @@ button.small:last-of-type:hover {
 <div class="card">
 <h3 data-t="cyr_twotone_title">«Великое Двоегласие» и Хвостики (ФОНЕТИЧЕСКИЙ БАЗИС)</h3>
 <p class="symbol">Ё</p>
-<p><b data-t="cyr_yo_title">Валёрыйская доминанта.</b> <span data-t="cyr_yo_desc">Полностью заменяет собой буквы «О», «И» и «Е» в абсолютно всех словах и корнях. Произносится чётко, глубоко и акцентированно. Букву «А» данный звук никогда не трогает.</span><br><i data-t="cyr_yo_ex">Примеры:</i> <b>мёвё</b> <span data-t="cyr_yo_ex1">(язык/речь)</span>, <b>сёунёлёс’ь</b> <span data-t="cyr_yo_ex2">(молодец)</span>, <b>ёрбузуё</b> <span data-t="cyr_yo_ex3">(радостно)</span>.</p>
+<p><b data-t="cyr_yo_title">Валёрыйская доминанта.</b> <span data-t="cyr_yo_desc">Полностью заменяет собой буквы «О», «И» и «Е» в абсолютно всех словах и корнях. Произносится чётко, глубоко и акцентированно. Букву «А» данный звук никогда не трогает.</span><br><i data-t="cyr_yo_ex">Примеры:</i> <b>мёвё</b> <span data-t="cyr_yo_ex1">(язык/речь)</span>, <b>берём’ь</b> <span data-t="cyr_yo_ex2">(молодец)</span>, <b>ёрбузуё</b> <span data-t="cyr_yo_ex3">(радостно)</span>.</p>
 
 <p class="symbol">Ы</p>
 <p><b data-t="cyr_y_title">Звук суровости.</b> <span data-t="cyr_y_desc">Придает слову твердость, вес и тяжелое, основательное звучание.</span><br><i data-t="cyr_yo_ex">Примеры:</i> <b>свыннёй’ъ</b>, <b>жывёт’ь</b>.</p>
@@ -528,6 +560,73 @@ button.small:last-of-type:hover {
 </div>
 </div>
 
+<div id="grammar" class="section">
+<div class="card">
+<h2 data-t="gram_main_title">Грамматический кодекс Валёрыйского Языка</h2>
+<p data-t="gram_main_desc">Валёрыйская грамматика построена по аналитическому (болгарскому) типу. В ней полностью отсутствуют падежи и изменения корней слов. Все связи строятся на неизменяемых частицах, порядке слов и уникальной системе описания через маркер Ё / ኤ.</p>
+</div>
+
+<div class="card">
+<h3 data-t="gram_s1_title">1. Порядок слов (Вместо падежей)</h3>
+<p data-t="gram_s1_desc">Поскольку падежных окончаний нет, роль слова определяется его строгой позицией в предложении:</p>
+<div class="gram-formula" data-t="gram_s1_form">Кто/Что → Действие (Глагол) → Кого/Что (Объект) → Детали</div>
+<div class="gram-example">
+    <p><b>Кириллица:</b> Вё хёб сябрё.</p>
+    <p><b>Гыыз:</b> ቬ ሄብ ስየበሬ።</p>
+    <p><i><span data-t="gram_ex_trans">Перевод:</span> Я имею друга (У меня есть друг).</i></p>
+</div>
+</div>
+
+<div class="card">
+<h3 data-t="gram_s2_title">2. Система описаний (Прилагательные и Наречия)</h3>
+<p data-t="gram_s2_desc">В языке нет отдельных прилагательных. Любое описание строится из общего абстрактного понятия, которое ставится СТРОГО ПОСЛЕ определяемого предмета с добавлением частицы описания Ё / ኤ.</p>
+<div class="gram-formula" data-t="gram_s2_form">Предмет + Понятие-описание + Частица Ё / ኤ</div>
+<div class="gram-example">
+    <p><b>Кириллица:</b> мёвё валёрй ё</p>
+    <p><b>Гыыз:</b> ሜቬ ቨሌርይ ኤ</p>
+    <p><i><span data-t="gram_ex_trans">Перевод:</span> Валёрыйский язык (букв. «язык Валерий [описание]»).</i></p>
+</div>
+<div class="gram-example">
+    <p><b>Кириллица:</b> сябрё ёрбузуё ё</p>
+    <p><b>Гыыз:</b> ስየበሬ ኤረቡዙኤ ኤ</p>
+    <p><i><span data-t="gram_ex_trans">Перевод:</span> Счастливый друг (букв. «друг счастье [описание]»).</i></p>
+</div>
+</div>
+
+<div class="card">
+<h3 data-t="gram_s3_title">3. Указание степени (Много / Мало)</h3>
+<p data-t="gram_s3_desc">Для усиления или ослабления признака перед существительным-описанием можно факультативно добавлять маркеры количества мнёгё / ምኔጌ или мёл`ъ / ሜል፡.</p>
+<div class="gram-formula" data-t="gram_s3_form">Предмет + [мнёгё / мёл`ъ] + Понятие-описание + Частица Ё / ኤ</div>
+<div class="gram-example">
+    <p><b>Кириллица:</b> сябрё мнёгё ёрбузуё ё</p>
+    <p><b>Гыыз:</b> ስየበሬ ምኔጌ ኤረቡዙኤ ኤ</p>
+    <p><i><span data-t="gram_ex_trans">Перевод:</span> Очень счастливый друг (букв. «друг много счастье [описание]»).</i></p>
+</div>
+</div>
+
+<div class="card">
+<h3 data-t="gram_s4_title">4. Времена глаголов (Частицы времени)</h3>
+<p data-t="gram_s4_desc">Глаголы не спрягаются по лицам и числам. Время задаётся неизменными болгарскими частицами перед глаголом (бувё / ቡቬ — прошлое, бёдё / ቤዴ — будущее):</p>
+<ul>
+    <li><b data-t="gram_t_pres">Настоящее (без частиц):</b> Вём`ь хёб мёвё. / ቬሜ፟ ሄብ ሜቬ። <i>(Мы имеем язык)</i></li>
+    <li><b data-t="gram_t_past">Прошедшее (бувё):</b> Вё бувё хёб сябрё. / ቬ ቡቬ ሄብ ስየበሬ። <i>(Я имел друга)</i></li>
+    <li><b data-t="gram_t_fut">Будущее (бёдё):</b> Тё бёдё хёб мёвё. / ቴ ቤዴ ሄብ ሜቬ። <i>(Ты будешь иметь язык)</i></li>
+</ul>
+</div>
+
+<div class="card">
+<h3 data-t="gram_s5_title">5. Служебные микро-слова (Предлоги отношений)</h3>
+<p data-t="gram_s5_desc">Связь элементов в предложении осуществляется через короткие фиксированные предлоги:</p>
+<ul>
+    <li><b>На / ነ</b> — <span data-t="gram_p_na">принадлежность (чей?): мёвё на Валёрй (Язык Валерия)</span></li>
+    <li><b>За / ዘ</b> — <span data-t="gram_p_za">цель (для): за вём`ь (Для нас)</span></li>
+    <li><b>У / ኡ</b> — <span data-t="gram_p_u">местонахождение (в/внутри): у академия (В академии)</span></li>
+    <li><b>Ву / ቩ</b> — <span data-t="gram_p_vu">направление (куда): ву академия (В академию)</span></li>
+    <li><b>Сы / ስ</b> — <span data-t="gram_p_sy">соучастие (с/со): сы сябрё (С другом)</span></li>
+</ul>
+</div>
+</div>
+
 <div id="dict" class="section">
 <div class="card">
 <h2 data-t="dict_title">Интерактивный Словарь</h2>
@@ -563,7 +662,7 @@ let currentLang = 'ru';
 const translations = {
     ru: {
         site_title: "Академия Валёрыйского Языка",
-        nav_home: "Главная", nav_cyr: "Кириллица", nav_geez: "Гыыз", nav_dict: "Словарь",
+        nav_home: "Главная", nav_cyr: "Кириллица", nav_geez: "Гыыз", nav_grammar: "Грамматика", nav_dict: "Словарь",
         home_title: "Добро пожаловать в Академию Валёрыйского языка!",
         home_desc: "Это интерактивная система для изучения уникальной фонетики, грамматики и письменности Валёры. Используйте верхнее меню, чтобы переключаться между разбором алфавитов и практическим словарем.",
         cyr_title: "Кириллического алфавит (Валёрыйская модификация)",
@@ -601,6 +700,28 @@ const translations = {
         geez_m2_d2: "Это стопроцентный аналог хвостика <b>’ъ</b>. Фиксируется сразу после слога, заставляя финальный согласный звук оборваться резко, жестко и с придыханием (как в словах <i>жирк’ъ</i>, <i>пьёт’ъ</i>).",
         geez_rule_title: "Правило интеграции:",
         geez_rule_desc: "Графика Гыыза полностью избавлена от чужеродных символов. Чтение священных текстов опирается исключительно на 4 рядов огласовок (где доминирует 3-й ряд — Ё) и два финальных модификатора хвостиков.",
+        gram_main_title: "Грамматический кодекс Валёрыйского Языка",
+        gram_main_desc: "Валёрыйская грамматика построена по аналитическому (болгарскому) типу. В ней полностью отсутствуют падежи и изменения корней слов. Все связи строятся на неизменяемых частицах, порядке слов и уникальной системе описания через маркер Ё / ኤ.",
+        gram_s1_title: "1. Порядок слов (Вместо падежей)",
+        gram_s1_desc: "Поскольку падежных окончаний нет, роль слова определяется его строгой позицией в предложении:",
+        gram_s1_form: "Кто/Что → Действие (Глагол) → Кого/Что (Объект) → Детали",
+        gram_ex_trans: "Перевод:",
+        gram_s2_title: "2. Система описаний (Прилагательные и Наречия)",
+        gram_s2_desc: "В языке нет отдельных прилагательных. Любое описание строится из общего абстрактного понятия, которое ставится СТРОГО ПОСЛЕ определяемого предмета с добавлением частицы описания Ё / Э.",
+        gram_s2_form: "Предмет + Понятие-описание + Частица Ё / Э",
+        gram_s3_title: "3. Указание степени (Много / Мало)",
+        gram_s3_desc: "Для усиления или ослабления признака перед существительным-описанием можно факультативно добавлять маркеры количества мнёгё / ምኔጌ или мёл`ъ / เมል፡.",
+        gram_s3_form: "Предмет + [мнёгё / мёл`ъ] + Понятие-описание + Частица Ё / Э",
+        gram_s4_title: "4. Времена глаголов (Частицы времени)",
+        gram_s4_desc: "Глаголы не спрягаются по лицам и числам. Время задаётся неизменными болгарскими частицами перед глаголом (бувё / ቡቬ — прошлое, бёдё / ቤዴ — будущее):",
+        gram_t_pres: "Настоящее (без частиц):", gram_t_past: "Прошедшее (бувё):", gram_t_fut: "Будущее (бёдё):",
+        gram_s5_title: "5. Служебные микро-слова (Предлоги отношений)",
+        gram_s5_desc: "Связь элементов в предложении осуществляется через короткие фиксированные предлоги:",
+        gram_p_na: "принадлежность (чей?): мёвё на Валёрй (Язык Валерия)",
+        gram_p_za: "цель (для): за вём`ь (Для нас)",
+        gram_p_u: "местонахождение (в/внутри): у академия (В академии)",
+        gram_p_vu: "направление (куда): ву академия (В академию)",
+        gram_p_sy: "соучастие (с/со): сы сябрё (С другом)",
         dict_title: "Интерактивный Словарь",
         dict_add: "Добавить слово",
         dict_token: "Настройка токена для записи",
@@ -617,9 +738,9 @@ const translations = {
     },
     en: {
         site_title: "Academy of the Valoryan Language",
-        nav_home: "Home", nav_cyr: "Cyrillic", nav_geez: "Geez", nav_dict: "Dictionary",
+        nav_home: "Home", nav_cyr: "Cyrillic", nav_geez: "Geez", nav_grammar: "Grammar", nav_dict: "Dictionary",
         home_title: "Welcome to the Academy of the Valoryan Language!",
-        home_desc: "This is an interactive system for studying the unique phonetics, grammar, and script of Valorya. Use the top menu to switch between alphabet analyses and the practical dictionary.",
+        home_desc: "This is an interactive system for studying the unique phone-tics, grammar, and script of Valorya. Use the top menu to switch between alphabet analyses and the practical dictionary.",
         cyr_title: "Cyrillic Alphabet (Valoryan Modification)",
         cyr_desc: "Valoryan Cyrillic uses a concise Slavic base governed by strict phonetic rules. The classic letters 'О' and 'Е' are completely excluded — their functions are assumed by the language's main vowel.",
         cyr_base_title: "Standard Letter Base",
@@ -655,6 +776,28 @@ const translations = {
         geez_m2_d2: "This is a 100% analogue of the <b>’ъ</b> tail. It is fixed immediately after the syllable, causing the final consonant sound to cut off sharply, harshly, and with an aspiration (as in the words <i>жирк’ъ</i>, <i>пьёт’ъ</i>).",
         geez_rule_title: "Integration Rule:",
         geez_rule_desc: "Geez graphics are completely free of alien symbols. Reading sacred texts relies exclusively on 4 rows of vocalizations (where the 3rd row — Ё dominates) and two final tail modifiers.",
+        gram_main_title: "Grammar Codex of the Valoryan Language",
+        gram_main_desc: "Valoryan grammar is built on an analytical (Bulgarian) model. It completely lacks cases and variations in word roots. All relations are built on invariant particles, word order, and a unique description system using the Ё / ኤ marker.",
+        gram_s1_title: "1. Word Order (Instead of Cases)",
+        gram_s1_desc: "Since there are no case endings, the role of a word is determined by its strict position in the sentence:",
+        gram_s1_form: "Subject → Action (Verb) → Object → Details",
+        gram_ex_trans: "Translation:",
+        gram_s2_title: "2. Description System (Adjectives and Adverbs)",
+        gram_s2_desc: "There are no separate adjectives in the language. Any description is built from a general abstract concept placed STRICTLY AFTER the noun with the addition of the Ё / ኤ description particle.",
+        gram_s2_form: "Noun + Concept-description + Particle Ё / ኤ",
+        gram_s3_title: "3. Specifying Degree (A lot / Not a lot)",
+        gram_s3_desc: "To strengthen or weaken a feature, the quantity markers мнёгё / ምኔጌ or мёл`ъ / ሜል፡ can optionally be added before the description noun.",
+        gram_s3_form: "Noun + [мнёгё / мёл`ъ] + Concept-description + Particle Ё / ኤ",
+        gram_s4_title: "4. Verb Tenses (Time Particles)",
+        gram_s4_desc: "Verbs do not conjugate by person or number. Tense is defined by invariant particles placed before the verb (бувё / ቡቬ for past, бёдё / ቤዴ for future):",
+        gram_t_pres: "Present (no particles):", gram_t_past: "Past (бувё):", gram_t_fut: "Future (бёдё):",
+        gram_s5_title: "5. Function Micro-words (Relation Prepositions)",
+        gram_s5_desc: "Connection of elements in a sentence is carried out through short fixed prepositions:",
+        gram_p_na: "belonging (whose?): мёвё на Валёрй (Language of Valeryi)",
+        gram_p_za: "goal (for): за вём`ь (For us)",
+        gram_p_u: "location (in/inside): у академия (In the academy)",
+        gram_p_vu: "direction (to): ву академия (To the academy)",
+        gram_p_sy: "co-participation (with): сы сябрё (With a friend)",
         dict_title: "Interactive Dictionary",
         dict_add: "Add Word",
         dict_token: "Token Setup for Writing",
