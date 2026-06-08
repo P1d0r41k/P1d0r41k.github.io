@@ -216,6 +216,22 @@ button:not(nav button):active {
     border: 1px solid var(--border-color);
 }
 
+button.small-setting {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--border-color);
+    color: var(--text-muted);
+    font-size: 11px;
+    padding: 4px 8px;
+    border-radius: 6px;
+    margin-top: 8px;
+    cursor: pointer;
+    display: inline-block;
+}
+button.small-setting:hover {
+    color: #fff;
+    border-color: var(--border-hover);
+}
+
 /* Маленькие кнопки в списке */
 button.small {
     margin-top: 0;
@@ -376,7 +392,7 @@ button.small:last-of-type:hover {
 <div id="cyr" class="section">
 
 <div class="card">
-<h2>Кириллический алфавит (Валёрыйская модификация)</h2>
+<h2>Кириллического алфавит (Валёрыйская модификация)</h2>
 <p>Валёрыйская кириллица использует лаконичную славянскую основу, подчиненную строгим фонетическим правилам. Из алфавита полностью исключены классические буквы «О» и «Е» — их функции берёт на себя главная гласная языка.</p>
 </div>
 
@@ -501,6 +517,8 @@ button.small:last-of-type:hover {
 <button onclick="addWord()">Добавить слово</button>
 <br>
 <span id="syncStatus" class="sync-badge">Облако: синхронизация...</span>
+<br>
+<button class="small-setting" onclick="setToken()">Настройка токена для записи</button>
 </div>
 
 <div class="card" id="list"></div>
@@ -513,67 +531,107 @@ document.querySelectorAll('.section').forEach(s => s.classList.remove('active'))
 document.getElementById(id).classList.add('active');
 }
 
-// Публичный защищенный адрес для авто-хранилища словаря Валёры
-const DB_URL = "https://kvbin.com/api/v1/bins/valera_global_dictionary";
+// Твой личный Gist ID из ссылки
+const GIST_ID = "44d2c96d2399451cbc96bc406f2750b8";
 let dict = [];
 
-// Автоматическая загрузка данных при открытии сайта
+// Функция для ручного ввода токена, если нужно редактировать словарь
+function setToken() {
+    let token = prompt("Введите ваш GitHub Personal Access Token (с правами gist):", localStorage.getItem("gist_token") || "");
+    if (token) {
+        localStorage.setItem("gist_token", token);
+        alert("Токен сохранен! Теперь вы можете добавлять и удалять слова.");
+        loadFromServer();
+    }
+}
+
+// Автоматическая загрузка данных из твоего Gist (Доступно всем без авторизации)
 async function loadFromServer() {
     const statusEl = document.getElementById("syncStatus");
-    // Сначала быстро грузим локальные данные на случай оффлайна
     dict = JSON.parse(localStorage.getItem("dict") || "[]");
     render();
 
     try {
-        statusEl.innerText = "Облако: загрузка базы...";
+        statusEl.innerText = "Облако: чтение из Gist...";
         statusEl.style.color = "var(--text-muted)";
         
-        const response = await fetch(DB_URL);
+        // Запрашиваем публичные данные Gist через стандартное API (без токена)
+        const response = await fetch(`https://api.github.com/gists/${GIST_ID}`);
         if (response.ok) {
-            const serverData = await response.json();
-            if (Array.isArray(serverData)) {
-                dict = serverData;
-                localStorage.setItem("dict", JSON.stringify(dict));
-                render();
-                statusEl.innerText = "Облако: синхронизировано успешно";
-                statusEl.style.color = "var(--accent)";
-                return;
-            }
+            const gistData = await response.json();
+            // Ищем первый файл внутри твоего Gist
+            const firstFileName = Object.keys(gistData.files)[0];
+            const fileContent = gistData.files[firstFileName].content;
+            
+            dict = JSON.parse(fileContent || "[]");
+            localStorage.setItem("dict", JSON.stringify(dict));
+            render();
+            statusEl.innerText = "Облако: данные синхронизированы";
+            statusEl.style.color = "var(--accent)";
+        } else {
+            statusEl.innerText = "Облако: ошибка чтения Gist";
+            statusEl.style.color = "var(--accent-danger)";
         }
-        statusEl.innerText = "Облако: база готова (первый запуск)";
     } catch (e) {
-        console.log("Оффлайн-режим или первый запуск:", e);
-        statusEl.innerText = "Облако: автономный режим (нет сети)";
+        console.error(e);
+        statusEl.innerText = "Облако: автономный режим (оффлайн)";
         statusEl.style.color = "var(--accent-danger)";
     }
 }
 
-// Автоматическое сохранение данных в облако при любых изменениях
+// Автоматическое сохранение в твой Gist (требует сохраненного токена)
 async function save(){
     localStorage.setItem("dict", JSON.stringify(dict));
     render();
 
     const statusEl = document.getElementById("syncStatus");
+    const token = localStorage.getItem("gist_token");
+
+    if (!token) {
+        statusEl.innerText = "⚠️ Изменения локальны. Настройте токен для сохранения в облако!";
+        statusEl.style.color = "var(--accent-danger)";
+        return;
+    }
+
     try {
-        statusEl.innerText = "Облако: сохранение...";
+        statusEl.innerText = "Облако: отправка изменений...";
         statusEl.style.color = "var(--text-muted)";
         
-        await fetch(DB_URL, {
-            method: "PUT",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(dict)
+        // Получаем имя файла в Gist, чтобы обновить именно его
+        const resGist = await fetch(`https://api.github.com/gists/${GIST_ID}`);
+        const gistData = await resGist.json();
+        const firstFileName = Object.keys(gistData.files)[0];
+
+        const response = await fetch(`https://api.github.com/gists/${GIST_ID}`, {
+            method: "PATCH",
+            headers: {
+                "Authorization": `token ${token}`,
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                files: {
+                    [firstFileName]: {
+                        content: JSON.stringify(dict, null, 2)
+                    }
+                }
+            })
         });
         
-        statusEl.innerText = "Облако: данные обновлены везде!";
-        statusEl.style.color = "var(--accent)";
+        if(response.ok) {
+            statusEl.innerText = "Облако: сохранено в GitHub Gist!";
+            statusEl.style.color = "var(--accent)";
+        } else {
+            statusEl.innerText = "❌ Ошибка сохранения. Проверьте токен.";
+            statusEl.style.color = "var(--accent-danger)";
+        }
     } catch (e) {
-        statusEl.innerText = "Облако: ошибка отправки. Сохранено локально.";
+        statusEl.innerText = "Облако: ошибка сети при сохранении.";
         statusEl.style.color = "var(--accent-danger)";
     }
 }
 
 function addWord(){
-if(!v.value) return; // Проверка на пустые строки
+if(!v.value) return;
 dict.push({v:v.value, r:r.value, e:e.value});
 v.value = ""; r.value = ""; e.value = "";
 save();
@@ -612,7 +670,7 @@ list.innerHTML = dict.map((d,i)=>
 ).join("");
 }
 
-// Старт синхронизации при загрузке
+// Старт
 loadFromServer();
 </script>
 
