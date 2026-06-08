@@ -512,11 +512,13 @@ button.small:last-of-type:hover {
 
 <script>
 function show(id){
-document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
-document.getElementById(id).classList.add('active');
+    document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
 }
 
+// Константы для работы с GitHub Gist
 const GIST_ID = "44d2c96d2399451cbc96bc406f2750b8";
+const FILE_NAME = "dictionary.json";
 let dict = [];
 
 function setToken() {
@@ -530,6 +532,8 @@ function setToken() {
 
 async function loadFromServer() {
     const statusEl = document.getElementById("syncStatus");
+    
+    // Сначала загружаем данные из локального кэша, чтобы интерфейс не был пустым
     dict = JSON.parse(localStorage.getItem("dict") || "[]");
     render();
 
@@ -537,21 +541,23 @@ async function loadFromServer() {
         statusEl.innerText = "Облако: подключение...";
         statusEl.style.color = "var(--text-muted)";
         
+        // Получаем свежие данные из Gist (публичный GET-запрос без токена)
         const response = await fetch(`https://api.github.com/gists/${GIST_ID}`);
         if (response.ok) {
             const gistData = await response.json();
-            const firstFileName = Object.keys(gistData.files)[0];
-            const fileContent = gistData.files[firstFileName].content;
             
-            // Умная проверка содержимого
-            if (fileContent && (fileContent.trim().startsWith("[" || fileContent.trim().startsWith("{")))) {
+            // Проверяем, существует ли нужный нам файл в ответе
+            if (gistData.files && gistData.files[FILE_NAME]) {
+                const fileContent = gistData.files[FILE_NAME].content;
+                
                 try {
-                    dict = JSON.parse(fileContent);
+                    dict = JSON.parse(fileContent || "[]");
                 } catch(e) {
-                    dict = []; // Файл есть, но в нём не JSON
+                    console.error("Ошибка парсинга JSON из Gist, сброс до пустого массива", e);
+                    dict = [];
                 }
             } else {
-                dict = []; // Файл пустой / текстовый превью
+                dict = []; // Если файла нет, считаем базу пустой
             }
 
             localStorage.setItem("dict", JSON.stringify(dict));
@@ -559,8 +565,8 @@ async function loadFromServer() {
             statusEl.innerText = "Облако: база синхронизирована";
             statusEl.style.color = "var(--accent)";
         } else {
-            statusEl.innerText = "Облако: база готова (первый старт)";
-            statusEl.style.color = "var(--accent)";
+            statusEl.innerText = "Облако: ошибка получения данных";
+            statusEl.style.color = "var(--accent-danger)";
         }
     } catch (e) {
         console.error(e);
@@ -570,6 +576,7 @@ async function loadFromServer() {
 }
 
 async function save(){
+    // Сохраняем локально, чтобы не потерять изменения при ошибках сети
     localStorage.setItem("dict", JSON.stringify(dict));
     render();
 
@@ -586,26 +593,23 @@ async function save(){
         statusEl.innerText = "Облако: сохранение...";
         statusEl.style.color = "var(--text-muted)";
         
-        const resGist = await fetch(`https://api.github.com/gists/${GIST_ID}`);
-        const gistData = await resGist.json();
-        const firstFileName = Object.keys(gistData.files)[0] || "dictionary.json";
-
+        // Отправляем PATCH-запрос для обновления контента конкретного файла
         const response = await fetch(`https://api.github.com/gists/${GIST_ID}`, {
             method: "PATCH",
             headers: {
-                "Authorization": `token ${token}`,
+                "Authorization": `Bearer ${token}`,
                 "Content-Type": "application/json"
             },
             body: JSON.stringify({
                 files: {
-                    [firstFileName]: {
+                    [FILE_NAME]: {
                         content: JSON.stringify(dict, null, 2)
                     }
                 }
             })
         });
         
-        if(response.ok) {
+        if (response.ok) {
             statusEl.innerText = "Облако: сохранено на GitHub!";
             statusEl.style.color = "var(--accent)";
         } else {
@@ -613,47 +617,49 @@ async function save(){
             statusEl.style.color = "var(--accent-danger)";
         }
     } catch (e) {
-        statusEl.innerText = "Облако: ошибка сети.";
+        console.error(e);
+        statusEl.innerText = "Облако: ошибка сети при сохранении.";
         statusEl.style.color = "var(--accent-danger)";
     }
 }
 
 function addWord(){
-if(!v.value) return;
-dict.push({v:v.value, r:r.value, e:e.value});
-v.value = ""; r.value = ""; e.value = "";
-save();
+    if(!v.value) return;
+    dict.push({v:v.value, r:r.value, e:e.value});
+    v.value = ""; r.value = ""; e.value = "";
+    save();
 }
 
 function editWord(i){
-let nv = prompt("Редактировать слово", dict[i].v);
-let nr = prompt("Редактировать русский", dict[i].r);
-let ne = prompt("Редактировать английский", dict[i].e);
-if(nv) dict[i].v = nv;
-if(nr) dict[i].r = nr;
-if(ne) dict[i].e = ne;
-save();
+    let nv = prompt("Редактировать слово", dict[i].v);
+    let nr = prompt("Редактировать русский", dict[i].r);
+    let ne = prompt("Редактировать английский", dict[i].e);
+    if(nv) dict[i].v = nv;
+    if(nr) dict[i].r = nr;
+    if(ne) dict[i].e = ne;
+    save();
 }
 
 function deleteWord(i){
-if(confirm("Удалить это слово?")) {
-dict.splice(i, 1);
-save();
-}
+    if(confirm("Удалить это слово?")) {
+        dict.splice(i, 1);
+        save();
+    }
 }
 
 function render(){
-list.innerHTML = dict.map((d,i)=>
-`<p>
-<span><b>${d.v}</b> — ${d.r} / ${d.e}</span>
-<div class="actions-wrapper">
-<button class="small" onclick="editWord(${i})">изменить</button>
-<button class="small" onclick="deleteWord(${i})">удалить</button>
-</div>
-</p>`
-).join("");
+    list.innerHTML = dict.map((d,i)=>
+        `<p>
+        <span><b>${d.v}</b> — ${d.r} / ${d.e}</span>
+        <div class="actions-wrapper">
+        <button class="small" onclick="editWord(${i})">изменить</button>
+        <button class="small" onclick="deleteWord(${i})">удалить</button>
+        </div>
+        </p>`
+    ).join("");
 }
 
+// Первый запуск при загрузке страницы
 loadFromServer();
 </script>
 
