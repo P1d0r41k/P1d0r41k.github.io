@@ -3,1001 +3,1269 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Академия Валёрыйского Языка</title>
-
+<title>Шиллинг — Конвертер валют</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
 :root {
-    --bg-main: #0a0d14;
-    --bg-card: rgba(21, 26, 38, 0.6);
-    --border-color: rgba(138, 211, 255, 0.15);
-    --border-hover: rgba(138, 211, 255, 0.4);
-    --text-main: #e2e8f0;
-    --text-muted: #94a3b8;
-    --accent: #8ad3ff;
-    --accent-glow: rgba(138, 211, 255, 0.2);
-    --accent-danger: #ff6b6b;
+  --bg:       #0f0f13;
+  --bg2:      #16161e;
+  --bg3:      #1d1d27;
+  --border:   #2a2a3a;
+  --border2:  #38384e;
+  --text:     #e4e2dc;
+  --text2:    #8a8880;
+  --text3:    #4a4a60;
+  --accent:   #1a1a1a;
+  --gold:     #c8a84b;
+  --gold2:    #e0be6e;
+  --gold-dim: #6a5828;
+  --green:    #4caf7a;
+  --red:      #d05050;
+  --teal:     #3ab8a0;
 }
 
 body {
-    margin: 0;
-    font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-    background-color: var(--bg-main);
-    background-image: 
-        radial-gradient(at 0% 0%, rgba(26, 35, 58, 0.5) 0px, transparent 50%),
-        radial-gradient(at 100% 100%, rgba(14, 28, 54, 0.5) 0px, transparent 50%);
-    background-attachment: fixed;
-    color: var(--text-main);
-    min-height: 100vh;
-    overflow-x: hidden;
+  font-family: 'Inter', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
 }
 
+/* TOP BAR */
+.topbar {
+  background: var(--bg2);
+  border-bottom: 1px solid var(--border);
+  font-size: 12px;
+  padding: 8px 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  letter-spacing: 0.3px;
+}
+.topbar-left { display: flex; align-items: center; gap: 12px; }
+.topbar span { color: var(--text2); }
+.topbar b { color: var(--text); }
+.price-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  background: rgba(200,168,75,0.08);
+  border: 1px solid var(--gold-dim);
+  border-radius: 20px;
+  padding: 2px 9px;
+  font-size: 11px;
+  color: var(--gold);
+}
+.dot {
+  width: 5px; height: 5px;
+  border-radius: 50%;
+  background: var(--green);
+  animation: blink 1.8s infinite;
+}
+@keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.2} }
+
+/* HEADER */
 header {
-    padding: 16px 24px;
-    background: rgba(16, 22, 34, 0.8);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    border-bottom: 1px solid var(--border-color);
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 16px;
-    position: sticky;
-    top: 0;
-    z-index: 100;
+  background: var(--bg2);
+  border-bottom: 1px solid var(--border);
+  padding: 18px 32px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 }
-
-h1 {
-    font-size: 20px;
-    font-weight: 700;
-    color: var(--accent);
-    letter-spacing: 0.5px;
-    margin: 0;
-    text-shadow: 0 0 12px var(--accent-glow);
+.logo { font-size: 18px; font-weight: 600; letter-spacing: -0.5px; color: var(--text); }
+.logo span { color: var(--text3); font-weight: 300; }
+.header-right { display: flex; align-items: center; gap: 20px; }
+nav a {
+  color: var(--text2);
+  text-decoration: none;
+  font-size: 13px;
+  margin-left: 24px;
+  transition: color 0.15s;
 }
+nav a:hover { color: var(--text); }
 
-nav {
-    display: flex;
-    gap: 8px;
-    flex-wrap: wrap;
-    align-items: center;
+/* LANG TOGGLE */
+.lang-toggle {
+  display: flex;
+  border: 1px solid var(--border2);
+  border-radius: 6px;
+  overflow: hidden;
 }
-
-nav button {
-    padding: 8px 16px;
-    border-radius: 8px;
-    border: 1px solid var(--border-color);
-    background: rgba(255, 255, 255, 0.03);
-    color: var(--text-muted);
-    font-size: 14px;
-    font-weight: 500;
-    cursor: pointer;
-    transition: all 0.2s ease;
-}
-
-nav button:hover {
-    color: var(--text-main);
-    border-color: var(--border-hover);
-    background: rgba(138, 211, 255, 0.08);
-}
-
-nav button:focus {
-    outline: none;
-    border-color: var(--accent);
-    box-shadow: 0 0 8px var(--accent-glow);
-}
-
-/* Стили для кнопок переключения языков */
-.lang-switcher {
-    display: flex;
-    gap: 4px;
-    border-left: 1px solid var(--border-color);
-    padding-left: 8px;
-}
-
 .lang-btn {
-    padding: 4px 8px;
-    font-size: 12px;
+  background: none;
+  border: none;
+  padding: 5px 11px;
+  font-family: 'Inter', sans-serif;
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--text3);
+  cursor: pointer;
+  letter-spacing: 0.5px;
+  transition: all 0.15s;
 }
+.lang-btn.active { background: var(--bg3); color: var(--text); }
+.lang-btn:hover:not(.active) { color: var(--text2); }
 
-.lang-btn.active-lang {
-    color: var(--accent);
-    border-color: var(--accent);
-    background: rgba(138, 211, 255, 0.1);
+/* HERO */
+.hero {
+  background: var(--bg2);
+  padding: 52px 32px 44px;
+  text-align: center;
+  border-bottom: 1px solid var(--border);
 }
-
-.section {
-    display: none;
-    padding: 40px 24px;
-    max-width: 800px;
-    margin: auto;
-    animation: fadeIn 0.4s ease-out;
+.hero h1 {
+  font-size: 34px;
+  font-weight: 600;
+  letter-spacing: -1px;
+  color: var(--text);
+  margin-bottom: 14px;
 }
-
-@keyframes fadeIn {
-    from { opacity: 0; transform: translateY(10px); }
-    to { opacity: 1; transform: translateY(0); }
+.hero-rate-display {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 10px 20px;
+  font-size: 14px;
+  color: var(--text2);
 }
-
-.active { 
-    display: block; 
+.hero-rate-display .rate-val { font-weight: 600; color: var(--gold2); font-size: 20px; }
+.hero-rate-display .divider { color: var(--border2); }
+.price-method-label {
+  font-size: 11px;
+  color: var(--text3);
+  margin-top: 10px;
+  letter-spacing: 0.3px;
 }
+.price-method-label.dynamic { color: var(--teal); }
+.price-method-label.base { color: var(--text3); }
 
+/* CARD */
 .card {
-    background: var(--bg-card);
-    backdrop-filter: blur(6px);
-    -webkit-backdrop-filter: blur(6px);
-    padding: 28px;
-    border-radius: 16px;
-    border: 1px solid var(--border-color);
-    margin-bottom: 24px;
-    line-height: 1.7;
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.3);
+  overflow: hidden;
 }
 
-.card h2 {
-    margin-top: 0;
-    font-size: 24px;
-    font-weight: 600;
-    color: #fff;
-    letter-spacing: -0.5px;
+/* CONVERTER */
+.converter-wrap {
+  max-width: 640px;
+  margin: -24px auto 0;
+  padding: 0 16px;
+  position: relative;
+  z-index: 10;
 }
 
-.card h3 {
-    margin-top: 0;
-    font-size: 18px;
-    font-weight: 600;
-    color: var(--accent);
-    border-bottom: 1px solid var(--border-color);
-    padding-bottom: 8px;
-    margin-bottom: 16px;
+.conv-tabs {
+  display: flex;
+  border-bottom: 1px solid var(--border);
+  background: rgba(0,0,0,0.2);
 }
-
-.card p {
-    margin: 10px 0;
-    color: var(--text-main);
+.conv-tab {
+  flex: 1;
+  padding: 14px;
+  background: none;
+  border: none;
+  font-family: 'Inter', sans-serif;
+  font-size: 13px;
+  color: var(--text3);
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -1px;
+  transition: all 0.15s;
 }
+.conv-tab.active { color: var(--text); border-bottom-color: var(--gold); font-weight: 500; }
+.conv-tab:hover:not(.active) { color: var(--text2); }
 
-.card p b {
-    color: #fff;
+.conv-body { padding: 24px; }
+
+.field-row {
+  display: flex;
+  gap: 12px;
+  align-items: flex-end;
+  margin-bottom: 16px;
 }
-
-.card i {
-    color: var(--text-muted);
-    font-style: italic;
+.field { flex: 1; }
+.field label {
+  display: block;
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--text3);
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  margin-bottom: 6px;
 }
-
-.card ul {
-    margin: 10px 0;
-    padding-left: 20px;
-    color: var(--text-main);
+.field input, .field select {
+  width: 100%;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 12px 14px;
+  font-family: 'Inter', sans-serif;
+  color: var(--text);
+  outline: none;
+  background: var(--bg3);
+  transition: border-color 0.15s;
 }
-
-.card li {
-    margin-bottom: 8px;
+.field input { font-size: 20px; font-weight: 500; }
+.field input:focus, .field select:focus { border-color: var(--gold-dim); background: var(--bg3); }
+.field select {
+  font-size: 14px;
+  appearance: none;
+  cursor: pointer;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%234a4a60' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 14px center;
+  padding-right: 36px;
 }
+.field select option { background: var(--bg3); }
 
-.symbol {
-    font-size: 28px;
-    color: var(--accent);
-    font-weight: 700;
-    margin-top: 24px !important;
-    display: inline-block;
-    border-bottom: 2px solid var(--accent);
-    padding-bottom: 2px;
-    line-height: 1;
+.swap-btn {
+  width: 36px; height: 36px;
+  border: 1px solid var(--border2);
+  border-radius: 50%;
+  background: var(--bg3);
+  cursor: pointer;
+  font-size: 16px;
+  color: var(--text2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  margin-bottom: 2px;
+  transition: all 0.15s;
 }
+.swap-btn:hover { background: var(--border); color: var(--text); }
 
-.gram-formula {
-    background: rgba(138, 211, 255, 0.05);
-    border-left: 3px solid var(--accent);
-    padding: 12px 16px;
-    border-radius: 0 8px 8px 0;
-    margin: 14px 0;
-    font-weight: 500;
+.btn-go {
+  width: 100%;
+  background: var(--gold-dim);
+  color: var(--text);
+  border: none;
+  border-radius: 8px;
+  padding: 14px;
+  font-family: 'Inter', sans-serif;
+  font-size: 15px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.15s;
+  margin-top: 4px;
 }
+.btn-go:hover { background: #7a6430; }
 
-.gram-example {
-    background: rgba(255, 255, 255, 0.02);
-    border: 1px solid var(--border-color);
-    padding: 14px;
-    border-radius: 10px;
-    margin-top: 10px;
+.result {
+  margin-top: 20px;
+  padding: 16px;
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--gold-dim);
+  border-radius: 8px;
+  display: none;
 }
+.result.show { display: block; }
+.result-main { font-size: 26px; font-weight: 600; color: var(--gold2); }
+.result-sub { font-size: 13px; color: var(--text2); margin-top: 4px; }
+.result-rate { font-size: 11px; color: var(--text3); margin-top: 8px; padding-top: 8px; border-top: 1px solid var(--border); }
 
-.gram-example p {
-    margin: 4px 0;
+/* FORMULA PANEL */
+.formula-wrap {
+  max-width: 640px;
+  margin: 28px auto 0;
+  padding: 0 16px;
 }
-
-input {
-    width: 100%;
-    box-sizing: border-box;
-    padding: 12px 16px;
-    margin-top: 12px;
-    border-radius: 10px;
-    border: 1px solid var(--border-color);
-    background: rgba(10, 13, 20, 0.6);
-    color: #fff;
-    font-size: 15px;
-    transition: all 0.2s ease;
+.formula-panel {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-top: 2px solid var(--teal);
+  border-radius: 12px;
+  padding: 22px 24px;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.2);
 }
-
-input:focus {
-    outline: none;
-    border-color: var(--accent);
-    box-shadow: 0 0 10px var(--accent-glow);
-    background: rgba(10, 13, 20, 0.9);
+.formula-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--teal);
+  margin-bottom: 5px;
 }
-
-input::placeholder {
-    color: #55657e;
+.formula-desc {
+  font-size: 11px;
+  color: var(--text3);
+  margin-bottom: 18px;
+  line-height: 1.7;
 }
-
-button:not(nav button) {
-    background: var(--accent);
-    color: #0a0d14;
-    border: none;
-    padding: 12px 24px;
-    border-radius: 10px;
-    font-weight: 600;
-    font-size: 15px;
-    cursor: pointer;
-    margin-top: 16px;
-    transition: transform 0.1s ease, cubic-bezier(0.175, 0.885, 0.32, 1.275) 0.2s;
+.formula-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-bottom: 16px;
 }
-
-button:not(nav button):hover {
-    transform: translateY(-1px);
-    box-shadow: 0 4px 12px rgba(138, 211, 255, 0.3);
+.formula-field label {
+  display: block;
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--text3);
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  margin-bottom: 5px;
 }
-
-button:not(nav button):active {
-    transform: translateY(1px);
+.formula-field input {
+  width: 100%;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 9px 11px;
+  font-family: 'Inter', sans-serif;
+  font-size: 14px;
+  color: var(--text);
+  outline: none;
+  background: var(--bg3);
+  transition: border-color 0.15s;
 }
+.formula-field input:focus { border-color: var(--teal); }
 
-.sync-badge {
-    display: inline-block;
-    font-size: 12px;
-    color: var(--text-muted);
-    margin-top: 12px;
-    padding: 4px 8px;
-    background: rgba(255, 255, 255, 0.03);
-    border-radius: 6px;
-    border: 1px solid var(--border-color);
+.formula-row { display: flex; gap: 10px; margin-top: 4px; }
+.btn-calc {
+  flex: 1;
+  background: rgba(58,184,160,0.08);
+  border: 1px solid rgba(58,184,160,0.3);
+  border-radius: 8px;
+  padding: 11px;
+  font-family: 'Inter', sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--teal);
+  cursor: pointer;
+  transition: all 0.15s;
 }
-
-button.small-setting {
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid var(--border-color);
-    color: var(--text-muted);
-    font-size: 11px;
-    padding: 4px 8px;
-    border-radius: 6px;
-    margin-top: 8px;
-    cursor: pointer;
-    display: inline-block;
+.btn-calc:hover { background: rgba(58,184,160,0.15); }
+.btn-save {
+  flex: 1;
+  background: rgba(200,168,75,0.1);
+  border: 1px solid var(--gold-dim);
+  border-radius: 8px;
+  padding: 11px;
+  font-family: 'Inter', sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--gold);
+  cursor: pointer;
+  transition: all 0.15s;
 }
-button.small-setting:hover {
-    color: #fff;
-    border-color: var(--border-hover);
+.btn-save:hover { background: rgba(200,168,75,0.18); }
+
+.formula-result {
+  margin-top: 14px;
+  padding: 14px;
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--teal);
+  border-radius: 8px;
+  display: none;
 }
+.formula-result.show { display: block; }
+.fr-label { font-size: 11px; color: var(--text3); margin-bottom: 4px; }
+.fr-val { font-size: 22px; font-weight: 600; color: var(--teal); }
+.fr-formula { font-size: 11px; color: var(--text3); margin-top: 8px; border-top: 1px solid var(--border); padding-top: 8px; line-height: 1.5; }
 
-button.small {
-    margin-top: 0;
-    margin-left: 8px;
-    font-size: 12px;
-    padding: 6px 12px;
-    border-radius: 6px;
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid var(--border-color);
-    color: var(--text-main);
+.db-status {
+  font-size: 11px;
+  margin-top: 10px;
+  padding: 8px 12px;
+  border-radius: 6px;
+  display: none;
 }
+.db-status.show { display: block; }
+.db-status.ok  { background: rgba(76,175,122,0.1);  color: var(--green); border: 1px solid rgba(76,175,122,0.25); }
+.db-status.err { background: rgba(208,80,80,0.1);   color: var(--red);   border: 1px solid rgba(208,80,80,0.25); }
+.db-status.info{ background: rgba(200,168,75,0.07); color: var(--gold);  border: 1px solid var(--gold-dim); }
 
-button.small:hover {
-    background: rgba(138, 211, 255, 0.15);
-    border-color: var(--accent);
-    color: #fff;
-    box-shadow: none;
-    transform: none;
+/* ALL RATES */
+.all-wrap {
+  max-width: 640px;
+  margin: 32px auto 0;
+  padding: 0 16px 48px;
 }
-
-button.small:last-of-type:hover {
-    background: rgba(255, 107, 107, 0.15);
-    border-color: var(--accent-danger);
-    color: var(--accent-danger);
+.all-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
 }
-
-#list p {
-    display: flex;
-    align-items: center;
-    padding: 12px 16px;
-    background: rgba(255, 255, 255, 0.02);
-    border-radius: 10px;
-    border: 1px solid rgba(255, 255, 255, 0.03);
-    margin-bottom: 10px;
-    flex-wrap: wrap;
-    gap: 10px;
+.all-header h3 { font-size: 15px; font-weight: 500; color: var(--text2); }
+.all-search {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 7px 12px;
+  font-family: 'Inter', sans-serif;
+  font-size: 13px;
+  color: var(--text);
+  outline: none;
+  width: 180px;
 }
+.all-search::placeholder { color: var(--text3); }
+.all-search:focus { border-color: var(--border2); }
 
-#list p span {
-    flex: 1 1 auto;
-    min-width: 200px;
+.tbl-controls { display: flex; gap: 8px; margin-bottom: 12px; }
+.tbl-input {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 7px 10px;
+  font-family: 'Inter', sans-serif;
+  font-size: 13px;
+  color: var(--text);
+  width: 120px;
+  outline: none;
 }
-
-#list p b {
-    color: var(--accent);
+.tbl-input:focus { border-color: var(--border2); }
+.btn-recalc {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 7px 14px;
+  font-family: 'Inter', sans-serif;
+  font-size: 13px;
+  color: var(--text2);
+  cursor: pointer;
+  transition: all 0.15s;
 }
+.btn-recalc:hover { border-color: var(--border2); color: var(--text); }
 
-#list p .actions-wrapper {
-    display: flex;
-    gap: 8px;
+.rates-box {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  overflow: hidden;
 }
-
-@media (max-width: 680px) {
-    header {
-        flex-direction: column;
-        align-items: stretch;
-        padding: 16px;
-        gap: 12px;
-    }
-
-    h1 {
-        text-align: center;
-        font-size: 18px;
-    }
-
-    nav {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 6px;
-    }
-
-    .lang-switcher {
-        grid-column: span 2;
-        border-left: none;
-        border-top: 1px solid var(--border-color);
-        padding-left: 0;
-        padding-top: 8px;
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-    }
-
-    nav button {
-        padding: 10px 6px;
-        font-size: 13px;
-        text-align: center;
-        border-radius: 6px;
-    }
-
-    .section {
-        padding: 20px 14px;
-    }
-
-    .card {
-        padding: 18px;
-        margin-bottom: 16px;
-        border-radius: 12px;
-    }
-
-    .card h2 {
-        font-size: 20px;
-    }
-
-    .card h3 {
-        font-size: 16px;
-    }
-
-    button:not(nav button) {
-        width: 100%;
-        box-sizing: border-box;
-        text-align: center;
-        padding: 14px;
-    }
-
-    #list p {
-        flex-direction: column;
-        align-items: stretch;
-        gap: 12px;
-        padding: 14px;
-    }
-
-    #list p span {
-        min-width: unset;
-        font-size: 14px;
-        line-height: 1.5;
-    }
-
-    #list p .actions-wrapper {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 8px;
-        width: 100%;
-    }
-
-    button.small {
-        margin: 0 !important;
-        padding: 10px;
-        font-size: 13px;
-        text-align: center;
-        width: 100%;
-        box-sizing: border-box;
-    }
+.rates-box table { width: 100%; border-collapse: collapse; }
+.rates-box thead th {
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--text3);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  padding: 10px 16px;
+  text-align: left;
+  background: var(--bg3);
+  border-bottom: 1px solid var(--border);
 }
+.rates-box thead th:last-child { text-align: right; }
+.rates-box tbody tr { border-bottom: 1px solid rgba(42,42,58,0.6); transition: background 0.1s; }
+.rates-box tbody tr:last-child { border-bottom: none; }
+.rates-box tbody tr:hover { background: var(--bg3); }
+.rates-box td { padding: 10px 16px; font-size: 13px; }
+.td-code { font-weight: 600; color: var(--gold-dim); width: 60px; }
+.td-name { color: var(--text3); }
+.td-val  { text-align: right; font-weight: 500; color: var(--text2); }
+
+.scroll-wrap { max-height: 420px; overflow-y: auto; }
+.scroll-wrap::-webkit-scrollbar { width: 4px; }
+.scroll-wrap::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 2px; }
+
+/* MODAL */
+.modal-overlay {
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,0.6);
+  z-index: 1000;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  backdrop-filter: blur(4px);
+}
+.modal-overlay.show { display: flex; }
+.modal {
+  background: var(--bg2);
+  border: 1px solid var(--border2);
+  border-radius: 14px;
+  padding: 28px;
+  width: 380px;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+}
+.modal h3 { font-size: 16px; font-weight: 600; color: var(--text); margin-bottom: 6px; }
+.modal p  { font-size: 13px; color: var(--text2); margin-bottom: 20px; line-height: 1.55; }
+.modal-field { margin-bottom: 12px; }
+.modal-field label {
+  display: block;
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--text3);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 6px;
+}
+.modal-field input {
+  width: 100%;
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 11px 13px;
+  font-family: 'Inter', sans-serif;
+  font-size: 14px;
+  color: var(--text);
+  outline: none;
+  transition: border-color 0.15s;
+}
+.modal-field input:focus { border-color: var(--gold-dim); }
+.modal-hint { font-size: 11px; color: var(--text3); margin-top: 4px; line-height: 1.5; }
+.modal-hint a { color: var(--gold-dim); text-decoration: none; }
+.modal-hint a:hover { color: var(--gold); }
+.modal-err { font-size: 12px; color: var(--red); margin-bottom: 12px; display: none; background: rgba(208,80,80,0.08); padding: 8px 10px; border-radius: 6px; border: 1px solid rgba(208,80,80,0.2); }
+.modal-buttons { display: flex; gap: 8px; margin-top: 18px; }
+.btn-modal-ok {
+  flex: 1;
+  background: var(--gold-dim);
+  color: var(--text);
+  border: none;
+  border-radius: 8px;
+  padding: 11px;
+  font-family: 'Inter', sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+.btn-modal-ok:hover { background: #7a6430; }
+.btn-modal-cancel {
+  flex: 1;
+  background: var(--bg3);
+  color: var(--text2);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 11px;
+  font-family: 'Inter', sans-serif;
+  font-size: 13px;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.btn-modal-cancel:hover { border-color: var(--border2); color: var(--text); }
+
+/* FOOTER */
+footer {
+  background: var(--bg2);
+  border-top: 1px solid var(--border);
+  color: var(--text3);
+  text-align: center;
+  padding: 20px;
+  font-size: 12px;
+  margin-top: 40px;
+}
+footer b { color: var(--text2); }
 </style>
 </head>
-
 <body>
 
-<header>
-<h1 id="site-title" data-t="site_title">Академия Валёрыйского Языка</h1>
+<!-- AUTH MODAL -->
+<div class="modal-overlay" id="auth-modal">
+  <div class="modal">
+    <h3 id="modal-title">🔑 Доступ администратора</h3>
+    <p id="modal-desc">Для сохранения курса введите токен и ID Gist. Данные хранятся только в памяти браузера и не передаются никуда, кроме api.github.com.</p>
 
-<nav>
-<button id="nav-home" data-t="nav_home" onclick="show('home')">Главная</button>
-<button id="nav-cyr" data-t="nav_cyr" onclick="show('cyr')">Кириллица</button>
-<button id="nav-geez" data-t="nav_geez" onclick="show('geez')">Гыыз</button>
-<button id="nav-grammar" data-t="nav_grammar" onclick="show('grammar')">Грамматика</button>
-<button id="nav-dict" data-t="nav_dict" onclick="show('dict')">Словарь</button>
-<div class="lang-switcher">
-    <button class="lang-btn active-lang" onclick="changeLang('ru')">RU</button>
-    <button class="lang-btn" onclick="changeLang('en')">EN</button>
+    <div class="modal-field">
+      <label id="modal-label-token">GitHub Personal Access Token</label>
+      <input type="password" id="modal-token" autocomplete="off">
+      <div class="modal-hint" id="modal-hint-token">
+        Создайте на <a href="https://github.com/settings/tokens" target="_blank">github.com/settings/tokens</a> — нужна галочка <b>gist</b>
+      </div>
+    </div>
+
+    <div class="modal-field">
+      <label id="modal-label-gist">Gist ID</label>
+      <input type="text" id="modal-gist" autocomplete="off" placeholder="например: a1b2c3d4e5f6g7h8">
+      <div class="modal-hint" id="modal-hint-gist">
+        Создайте Gist на <a href="https://gist.github.com" target="_blank">gist.github.com</a> с файлом <b>shilling_rate.json</b>. ID — часть URL после вашего имени.
+      </div>
+    </div>
+
+    <div class="modal-err" id="modal-err"></div>
+    <div class="modal-buttons">
+      <button class="btn-modal-cancel" id="modal-cancel-btn" onclick="closeModal()">Отмена</button>
+      <button class="btn-modal-ok" id="modal-ok-btn" onclick="confirmSave()">Сохранить</button>
+    </div>
+  </div>
 </div>
-</nav>
+
+<!-- TOPBAR -->
+<div class="topbar">
+  <div class="topbar-left">
+    <span>1 SHL = <b id="hdr-rate">...</b></span>
+    <div class="price-badge"><div class="dot"></div><span id="price-mode-badge">Базовая цена</span></div>
+  </div>
+  <span id="hdr-time">Загрузка...</span>
+</div>
+
+<!-- HEADER -->
+<header>
+  <div class="logo">Шиллинг <span>/ Конвертер</span></div>
+  <div class="header-right">
+    <nav>
+      <a href="#converter-wrap" id="nav-converter">Конвертер</a>
+      <a href="#all-wrap" id="nav-rates">Курсы</a>
+      <a href="#formula-wrap" id="nav-formula">Формула</a>
+    </nav>
+    <div class="lang-toggle">
+      <button class="lang-btn active" onclick="setLang('ru')">RU</button>
+      <button class="lang-btn" onclick="setLang('en')">EN</button>
+    </div>
+  </div>
 </header>
 
-<div id="home" class="section active">
-<div class="card">
-<h2 data-t="home_title">Добро пожаловать в Академия Валёрыйского языка!</h2>
-<p data-t="home_desc">Это интерактивная система для изучения уникальной фонетики, грамматики и письменности Валёры. Используйте верхнее меню, чтобы переключаться между разбором алфавитов и практическим словарем.</p>
-</div>
-</div>
-
-<div id="cyr" class="section">
-<div class="card">
-<h2 data-t="cyr_title">Кириллического алфавит (Валёрыйская модификация)</h2>
-<p data-t="cyr_desc">Валёрыйская кириллица использует лаконичную славянскую основу, подчиненную строгим фонетическим правилам. Из алфавита полностью исключены классические буквы «О» и «Е» — их функции берёт на себя главная гласная языка.</p>
-</div>
-
-<div class="card">
-<h3 data-t="cyr_base_title">Стандартная база букв</h3>
-<p data-t="cyr_base_desc">Звуки, составляющие основу валёрыйской речи:</p>
-<p>А а — [а] <span data-t="cyr_a_note">(сохраняет своё классическое звучание)</span></p>
-<p>Б б — [б]</p>
-<p>В в — [в]</p>
-<p>Г г — [г]</p>
-<p>Д д — [д]</p>
-<p>Ж ж — [ж]</p>
-<p>З з — [з]</p>
-<p>Й й — [й]</p>
-<p>К k — [к]</p>
-<p>Л л — [л]</p>
-<p>М м — [м]</p>
-<p>Н н — [н]</p>
-<p>П п — [п]</p>
-<p>Р р — [р]</p>
-<p>С с — [с]</p>
-<p>Т т — [т]</p>
-<p>У у — [у]</p>
-<p>Ф ф — [ф]</p>
-<p>Х х — [х]</p>
-<p>Ц ц — [ц]</p>
-<p>Ч ч — [ч]</p>
-<p>Ш ш — [ш]</p>
-<p>Щ щ — [щ]</p>
-<p data-t="cyr_hard_sign">Ъ ъ — используется исключительно в составе ультра-твёрдого хвостика</p>
-<p data-t="cyr_soft_sign">Ь ь — используется исключительно в составе ультра-мягкого хвостика</p>
+<!-- HERO -->
+<div class="hero">
+  <h1 id="hero-title">Конвертер шиллинга</h1>
+  <div class="hero-rate-display">
+    <span>1 SHL</span>
+    <span class="divider">=</span>
+    <span class="rate-val" id="hero-kzt">...</span>
+    <span>KZT</span>
+    <span class="divider">·</span>
+    <span class="rate-val" id="hero-usd">...</span>
+    <span>USD</span>
+  </div>
+  <div class="price-method-label" id="price-method-label">⟳ Загрузка формулы цены...</div>
 </div>
 
-<div class="card">
-<h3 data-t="cyr_twotone_title">«Великое Двоегласие» и Хвостики (ФОНЕТИЧЕСКИЙ БАЗИС)</h3>
-<p class="symbol">Ё</p>
-<p><b data-t="cyr_yo_title">Валёрыйская доминанта.</b> <span data-t="cyr_yo_desc">Полностью заменяет собой буквы «О», «И» и «Е» в абсолютно всех словах и корнях. Произносится чётко, глубоко и акцентированно. Букву «А» данный звук никогда не трогает.</span><br><i data-t="cyr_yo_ex">Примеры:</i> <b>мёвё</b> <span data-t="cyr_yo_ex1">(язык/речь)</span>, <b>берём’ь</b> <span data-t="cyr_yo_ex2">(молодец)</span>, <b>ёрбузуё</b> <span data-t="cyr_yo_ex3">(радостно)</span>.</p>
-
-<p class="symbol">Ы</p>
-<p><b data-t="cyr_y_title">Звук суровости.</b> <span data-t="cyr_y_desc">Придает слову твердость, вес и тяжелое, основательное звучание.</span><br><i data-t="cyr_yo_ex">Примеры:</i> <b>свыннёй’ъ</b>, <b>жывёт’ь</b>.</p>
-
-<p class="symbol">’ъ</p>
-<p><b data-t="cyr_th_title">Ультра-твёрдый хвостик.</b> <span data-t="cyr_th_desc">Ставится на конце слов. Означает резкую остановку дыхания с жестким звуком и легким выдохом (эффект фиксации мысли).</span><br><i data-t="cyr_yo_ex">Примеры:</i> <b>жирк’ъ</b>, <b>гётат’ъ</b>, <b>пьёт’ъ</b>, <b>чёй’ъ</b>.</p>
-
-<p class="symbol">’ь</p>
-<p><b data-t="cyr_ts_title">Ультра-мягкий хвостик.</b> <span data-t="cyr_ts_desc">Делает финальный согласный мягким, как пух. Звук плавно уходит на затухание.</span><br><i data-t="cyr_yo_ex">Примеры:</i> <b>сёунёлёс’ь</b>, <b>ёсч’ь</b>, <b>амын’ь</b>.</p>
-</div>
-</div>
-
-<div id="geez" class="section">
-<div class="card">
-<h2 data-t="geez_title">Священный шрифт Гыыз (Абугида)</h2>
-<p data-t="geez_desc">Валёрыйское письмо Гыыз — это <b>абугида</b>, где каждый символ по умолчанию содержит в себе согласный звук и привязанную к нему гласную. В валёрыйской традиции эта система строго синхронизирована с модифицированной кириллицей.</p>
-</div>
-
-<div class="card">
-<h3 data-t="geez_c_title">1. Базовые согласные основы</h3>
-<p data-t="geez_c_desc">Основные знаки, меняющие свою форму в зависимости от огласовки ряда:</p>
-<p>አ — <span data-t="geez_c_1">гортанный носитель (используется, если слово начинается с гласной)</span></p>
-<p>በ — б</p>
-<p>ቨ — в</p>
-<p>ተ — т</p>
-<p>ቸ — ч</p>
-<p>ኀ — х</p>
-<p>ነ — н</p>
-<p>ከ — к</p>
-<p>ዘ — з</p>
-<p>የ — й</p>
-<p>ደ — д</p>
-<p>ጀ — дж</p>
-<p>ገ — г</p>
-<p>ጸ — ц</p>
-<p>ፈ — ф</p>
-<p>ፐ — п</p>
-<p>ሀ — х</p>
-<p>ለ — л</p>
-<p>መ — м</p>
-<p>ረ — р</p>
-<p>ሰ — с</p>
-<p>ሸ — ш</p>
+<!-- CONVERTER -->
+<div class="converter-wrap" id="converter-wrap">
+  <div class="card">
+    <div class="conv-tabs">
+      <button class="conv-tab active" id="tab-from" onclick="setMode('from')">Шиллинг → Валюта</button>
+      <button class="conv-tab" id="tab-to" onclick="setMode('to')">Валюта → Шиллинг</button>
+    </div>
+    <div class="conv-body">
+      <div class="field-row">
+        <div class="field">
+          <label id="lbl-from">Сумма в шиллингах</label>
+          <input type="number" id="amount" placeholder="1" min="0" step="any">
+        </div>
+        <button class="swap-btn" onclick="swapMode()" title="Поменять">⇄</button>
+        <div class="field">
+          <label id="lbl-to">Валюта</label>
+          <select id="cur-sel"></select>
+        </div>
+      </div>
+      <button class="btn-go" id="btn-convert" onclick="doConvert()">Конвертировать</button>
+      <div class="result" id="result">
+        <div class="result-main" id="res-main"></div>
+        <div class="result-sub" id="res-sub"></div>
+        <div class="result-rate" id="res-rate"></div>
+      </div>
+    </div>
+  </div>
 </div>
 
-<div class="card">
-<h3 data-t="geez_v_title">2. Система огласовок (Синхронизация с Валёрыйской фонетикой)</h3>
-<p data-t="geez_v_desc">Каждая согласная буква имеет ровно 7 рядов изменений формы, которые теперь строго соответствуют валёрыйской кириллице. Рассмотрим систему на примере знака <b>«ሀ» (х)</b>:</p>
-<p>ሀ = [ха] <span data-t="geez_v_r1">(1-й ряд: базовая гласная <b>А</b>. Пример: амын’ь)</span></p>
-<p>ሁ = [ху] <span data-t="geez_v_r2">(2-й ряд: базовая гласная <b>У</b>. Пример: ёрбузуё)</span></p>
-<p>ሄ = [хё] <span data-t="geez_v_r3">(3-й ряд: главная доминанта — гласная <b>Ё</b>. Полностью заменяет старые звуки О, И и Е. Пример: мёвё, сёунёлёс’ь)</span></p>
-<p>ህ = [хы] / [х] <span data-t="geez_v_r4">(4-й ряд: суровый звук <b>Ы</b>)</span></p>
+<!-- FORMULA PANEL -->
+<div class="formula-wrap" id="formula-wrap" style="margin-top:28px;">
+  <div class="formula-panel">
+    <div class="formula-title" id="formula-title">⬡ Динамическая формула цены</div>
+    <div class="formula-desc" id="formula-desc">
+      Базовая: P₀ = (C_ink + C_paper) / N × 10 &nbsp;|&nbsp; Динамическая (с 60+ купюр): Pₙ = Pᵥ × (1 + α × (S − D / M))
+    </div>
+    <div class="formula-grid">
+      <div class="formula-field"><label id="lbl-ink">C_ink — цена чернил (₸)</label><input type="number" id="f-ink" value="5" step="0.01"></div>
+      <div class="formula-field"><label id="lbl-paper">C_paper — цена бумаги (₸)</label><input type="number" id="f-paper" value="5.2" step="0.01"></div>
+      <div class="formula-field"><label id="lbl-n">N — единиц на листе</label><input type="number" id="f-n" value="200"></div>
+      <div class="formula-field"><label id="lbl-total">Всего напечатано (M)</label><input type="number" id="f-total" value="0"></div>
+      <div class="formula-field"><label id="lbl-printed">Напечатано сегодня (D)</label><input type="number" id="f-printed" value="0"></div>
+      <div class="formula-field"><label id="lbl-withdrawn">Изъято сегодня (S)</label><input type="number" id="f-withdrawn" value="0"></div>
+      <div class="formula-field"><label id="lbl-alpha">α — коэффициент</label><input type="number" id="f-alpha" value="0.2" step="0.1"></div>
+      <div class="formula-field"><label id="lbl-prev">Цена вчера Pᵥ (₸)</label><input type="number" id="f-prev" value="0.51" step="0.0001"></div>
+    </div>
+    <div class="formula-row">
+      <button class="btn-calc" id="btn-calc" onclick="calcFormula()">⟳ Рассчитать</button>
+      <button class="btn-save" id="btn-save-gist" onclick="openSaveModal()">↑ Сохранить в Gist</button>
+    </div>
+    <div class="formula-result" id="formula-result">
+      <div class="fr-label" id="fr-label">Новая цена шиллинга</div>
+      <div class="fr-val" id="fr-val">—</div>
+      <div class="fr-formula" id="fr-formula"></div>
+    </div>
+    <div class="db-status" id="db-status"></div>
+  </div>
 </div>
 
-<div class="card">
-<h3 data-t="geez_ext_title">3. Специальные Валёрыйские расширения Гыыз</h3>
-<p data-t="geez_ext_desc">Для передачи финальных ультра-хвостиков кириллицы используются оригинальные знаки препинания Гыыза в роли надстрочных и подстрочных модификаторов:</p>
-
-<p class="symbol" data-t="geez_m1_sym">Модификатор ፟ (Ультра-мягкий хвостик)</p>
-<p><b data-t="geez_m1_t1">Знак в Гыызе:</b> <span data-t="geez_m1_d1">Традиционный надстрочный знак сочетаемости (две горизонтальные точки).</span><br>
-<b data-t="geez_m1_t2">Связь с кириллицей:</b> <span data-t="geez_m1_d2">Это стопроцентный аналог хвостика <b>’ь</b>. Ставится над финальным слогом 3-го ряда, превращая его в ультра-мягкое, затухающее окончание (как в словах <i>сёунёлёс’ь</i>, <i>амын’ь</i>).</span></p>
-
-<p class="symbol" data-t="geez_m2_sym">Модификатор ፡ (Ультра-твёрдый хвостик)</p>
-<p><b data-t="geez_m1_t1">Знак в Гыызе:</b> <span data-t="geez_m2_d1">Традиционный разделитель слов Гыыза (две вертикальные точки).</span><br>
-<b data-t="geez_m1_t2">Связь с кириллицей:</b> <span data-t="geez_m2_d2">Это стопроцентный аналог хвостика <b>’ъ</b>. Фиксируется сразу после слога, заставляя финальный согласный звук оборваться резко, жестко и с придыханием (как в словах <i>жирк’ъ</i>, <i>пьёт’ъ</i>).</span></p>
-
-<p class="symbol" data-t="geez_rule_title">Правило интеграции:</p>
-<p data-t="geez_rule_desc">Графика Гыыза полностью избавлена от чужеродных символов. Чтение священных текстов опирается исключительно на 4 рядов огласовок (где доминирует 3-й ряд — Ё) и два финальных модификатора хвостиков.</p>
-</div>
-</div>
-
-<div id="grammar" class="section">
-<div class="card">
-<h2 data-t="gram_main_title">Грамматический кодекс Валёрыйского Языка</h2>
-<p data-t="gram_main_desc">Валёрыйская грамматика построена по аналитическому (болгарскому) типу. В ней полностью отсутствуют падежи и изменения корней слов. Все связи строятся на неизменяемых частицах, порядке слов и уникальной системе описания через маркер Ё / ኤ.</p>
+<!-- ALL RATES -->
+<div class="all-wrap" id="all-wrap">
+  <div class="all-header">
+    <h3 id="rates-title">Все курсы — <span id="tbl-base-label">1 SHL</span></h3>
+    <input class="all-search" type="text" id="search" oninput="filterRates()">
+  </div>
+  <div class="tbl-controls">
+    <input type="number" class="tbl-input" id="tbl-amt" value="1">
+    <button class="btn-recalc" id="btn-recalc" onclick="refreshAll()">Пересчитать</button>
+  </div>
+  <div class="rates-box">
+    <table>
+      <thead><tr><th id="th-code">Код</th><th id="th-name">Валюта</th><th id="th-amount">Сумма</th></tr></thead>
+    </table>
+    <div class="scroll-wrap">
+      <table><tbody id="rates-body"></tbody></table>
+    </div>
+  </div>
 </div>
 
-<div class="card">
-<h3 data-t="gram_s1_title">1. Порядок слов (Вместо падежей)</h3>
-<p data-t="gram_s1_desc">Поскольку падежных окончаний нет, роль слова определяется его строгой позицией в предложении:</p>
-<div class="gram-formula" data-t="gram_s1_form">Кто/Что → Действие (Глагол) → Кого/Что (Объект) → Детали</div>
-<div class="gram-example">
-    <p><b>Кириллица:</b> Вё хёб сябрё.</p>
-    <p><b>Гыыз:</b> ቬ ሄብ ስየበሬ።</p>
-    <p><i><span data-t="gram_ex_trans">Перевод:</span> Я имею друга (У меня есть друг).</i></p>
-</div>
-</div>
-
-<div class="card">
-<h3 data-t="gram_s2_title">2. Система описаний (Прилагательные и Наречия)</h3>
-<p data-t="gram_s2_desc">В языке нет отдельных прилагательных. Любое описание строится из общего абстрактного понятия, которое ставится СТРОГО ПОСЛЕ определяемого предмета с добавлением частицы описания Ё / ኤ.</p>
-<div class="gram-formula" data-t="gram_s2_form">Предмет + Понятие-описание + Частица Ё / ኤ</div>
-<div class="gram-example">
-    <p><b>Кириллица:</b> мёвё валёрй ё</p>
-    <p><b>Гыыз:</b> ሜቬ ቨሌርይ ኤ</p>
-    <p><i><span data-t="gram_ex_trans">Перевод:</span> Валёрыйский язык (букв. «язык Валерий [описание]»).</i></p>
-</div>
-<div class="gram-example">
-    <p><b>Кириллица:</b> сябрё ёрбузуё ё</p>
-    <p><b>Гыыз:</b> ስየበሬ ኤረቡዙኤ ኤ</p>
-    <p><i><span data-t="gram_ex_trans">Перевод:</span> Счастливый друг (букв. «друг счастье [описание]»).</i></p>
-</div>
-</div>
-
-<div class="card">
-<h3 data-t="gram_s3_title">3. Указание степени (Много / Мало)</h3>
-<p data-t="gram_s3_desc">Для усиления или ослабления признака перед существительным-описанием можно факультативно добавлять маркеры количества мнёгё / ምኔጌ или мёл`ъ / ሜል፡.</p>
-<div class="gram-formula" data-t="gram_s3_form">Предмет + [мнёгё / мёл`ъ] + Понятие-описание + Частица Ё / ኤ</div>
-<div class="gram-example">
-    <p><b>Кириллица:</b> сябрё мнёгё ёрбузуё ё</p>
-    <p><b>Гыыз:</b> ስየበሬ ምኔጌ ኤረቡዙኤ ኤ</p>
-    <p><i><span data-t="gram_ex_trans">Перевод:</span> Очень счастливый друг (букв. «друг много счастье [описание]»).</i></p>
-</div>
-</div>
-
-<div class="card">
-<h3 data-t="gram_s4_title">4. Времена глаголов (Частицы времени)</h3>
-<p data-t="gram_s4_desc">Глаголы не спрягаются по лицам и числам. Время задаётся неизменными болгарскими частицами перед глаголом (бувё / ቡቬ — прошлое, бёдё / ቤዴ — будущее):</p>
-<ul>
-    <li><b data-t="gram_t_pres">Настоящее (без частиц):</b> Вём`ь хёб мёвё. / ቬሜ፟ ሄብ ሜቬ። <i>(Мы имеем язык)</i></li>
-    <li><b data-t="gram_t_past">Прошедшее (бувё):</b> Вё бувё хёб сябрё. / ቬ ቡቬ ሄብ ስየበሬ። <i>(Я имел друга)</i></li>
-    <li><b data-t="gram_t_fut">Будущее (бёдё):</b> Тё бёдё хёб мёвё. / ቴ ቤዴ ሄብ ሜቬ። <i>(Ты будешь иметь язык)</i></li>
-</ul>
-</div>
-
-<div class="card">
-<h3 data-t="gram_s5_title">5. Служебные микро-слова (Предлоги отношений)</h3>
-<p data-t="gram_s5_desc">Связь элементов в предложении осуществляется через короткие фиксированные предлоги:</p>
-<ul>
-    <li><b>На / ነ</b> — <span data-t="gram_p_na">принадлежность (чей?): мёвё на Валёрй (Язык Валерия)</span></li>
-    <li><b>За / ዘ</b> — <span data-t="gram_p_za">цель (для): за вём`ь (Для нас)</span></li>
-    <li><b>У / ኡ</b> — <span data-t="gram_p_u">местонахождение (в/внутри): у академия (В академии)</span></li>
-    <li><b>Ву / ቩ</b> — <span data-t="gram_p_vu">направление (куда): ву академия (В академию)</span></li>
-    <li><b>Сы / ስ</b> — <span data-t="gram_p_sy">соучастие (с/со): сы сябрё (С другом)</span></li>
-</ul>
-</div>
-</div>
-
-<div id="dict" class="section">
-<div class="card">
-<h2 data-t="dict_title">Интерактивный Словарь</h2>
-<input id="search" placeholder="Поиск слова... / Search word..." oninput="render()">
-
-<input id="v" placeholder="Слово на Валёрыйском (кириллица)">
-<input id="r" placeholder="Перевод на Русский">
-<input id="e" placeholder="Перевод на Английский">
-
-<button id="add-btn" data-t="dict_add" onclick="addWord()">Добавить слово</button>
-<br>
-<span id="syncStatus" class="sync-badge">Облако: синхронизация...</span>
-<br>
-<button id="token-btn" data-t="dict_token" class="small-setting" onclick="setToken()">Настройка токена для записи</button>
-</div>
-
-<div class="card" id="list"></div>
-</div>
+<footer>
+  Шиллинг · 1 SHL = <b id="footer-rate">...</b> KZT · <b id="footer-note">Данные обновляются в реальном времени</b>
+</footer>
 
 <script>
-function show(id){
-    document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
-    document.getElementById(id).classList.add('active');
-}
-
-// Константы для работы с GitHub Gist
-const GIST_ID = "44d2c96d2399451cbc96bc406f2750b8";
-const FILE_NAME = "dictionary.json";
-let dict = [];
-let currentLang = 'ru';
-
-// Система мультиязычности
-const translations = {
-    ru: {
-        site_title: "Академия Валёрыйского Языка",
-        nav_home: "Главная", nav_cyr: "Кириллица", nav_geez: "Гыыз", nav_grammar: "Грамматика", nav_dict: "Словарь",
-        home_title: "Добро пожаловать в Академию Валёрыйского языка!",
-        home_desc: "Это интерактивная система для изучения уникальной фонетики, грамматики и письменности Валёры. Используйте верхнее меню, чтобы переключаться между разбором алфавитов и практическим словарем.",
-        cyr_title: "Кириллического алфавит (Валёрыйская модификация)",
-        cyr_desc: "Валёрыйская кириллица использует лаконичную славянскую основу, подчиненную строгим фонетическим правилам. Из алфавита полностью исключены классические буквы «О» и «Е» — их функции берёт на себя главная гласная языка.",
-        cyr_base_title: "Стандартная база букв",
-        cyr_base_desc: "Звуки, составляющие основу валёрыйской речи:",
-        cyr_hard_sign: "Ъ ъ — используется исключительно в составе ультра-твёрдого хвостика",
-        cyr_soft_sign: "Ь ь — используется исключительно в составе ультра-мягкого хвостика",
-        cyr_twotone_title: "«Великое Двоегласие» и Хвостики (ФОНЕТИЧЕСКИЙ БАЗИС)",
-        cyr_yo_title: "Валёрыйская доминанта.",
-        cyr_yo_desc: "Полностью заменяет собой буквы «О», «И» и «Е» в абсолютно всех словах и корнях. Произносится чётко, глубоко и акцентированно. Букву «А» данный звук никогда не трогает.",
-        cyr_yo_ex: "Примеры:", cyr_yo_ex1: "(язык/речь)", cyr_yo_ex2: "(молодец)", cyr_yo_ex3: "(радостно)",
-        cyr_y_title: "Звук суровости.", cyr_y_desc: "Придает слову твердость, вес и тяжелое, основательное звучание.",
-        cyr_th_title: "Ультра-твёрдый хвостик.", cyr_th_desc: "Ставится на конце слов. Означает резкую остановку дыхания с жестким звуком и легким выдохом (эффект фиксации мысли).",
-        cyr_ts_title: "Ультра-мягкий хвостик.", cyr_ts_desc: "Делает финальный согласный мягким, как пух. Звук плавно уходит на затухание.",
-        cyr_a_note: "(сохраняет своё классическое звучание)",
-        geez_title: "Священный шрифт Гыыз (Абугида)",
-        geez_desc: "Валёрыйское письмо Гыыз — это <b>абугида</b>, где каждый символ по умолчанию содержит в себе согласный звук и привязанную к нему гласную. В валёрыйской традиции эта система строго синхронизирована с модифицированной кириллицей.",
-        geez_c_title: "1. Базовые согласные основы",
-        geez_c_desc: "Основные знаки, меняющие свою форму в зависимости от огласовки ряда:",
-        geez_c_1: "гортанный носитель (используется, если слово начинается с гласной)",
-        geez_v_title: "2. Система огласовок (Синхронизация с Валёрыйской фонетикой)",
-        geez_v_desc: "Каждая согласная буква имеет ровно 7 рядов изменений формы, которые теперь строго соответствуют валёрыйской кириллице. Рассмотрим систему на примере знака <b>«ሀ» (х)</b>:",
-        geez_v_r1: "(1-й ряд: базовая гласная <b>А</b>. Пример: амын’ь)",
-        geez_v_r2: "(2-й ряд: базовая гласная <b>У</b>. Пример: ёрбузуё)",
-        geez_v_r3: "(3-й ряд: главная доминанта — гласная <b>Ё</b>. Полностью заменяет старые звуки О, И и Е. Пример: мёвё, сёунёлёс’ь)",
-        geez_v_r4: "(4-й ряд: суровый звук <b>Ы</b>)",
-        geez_ext_title: "3. Специальные Валёрыйские расширения Гыыз",
-        geez_ext_desc: "Для передачи финальных ультра-хвостиков кириллицы используются оригинальные знаки препинания Гыыза в роли надстрочных и подстрочных модификаторов:",
-        geez_m1_sym: "Модификатор ፟ (Ультра-мягкий хвостик)",
-        geez_m2_sym: "Модификатор ፡ (Ультра-твёрдый хвостик)",
-        geez_m1_t1: "Знак в Гыызе:", geez_m1_d1: "Традиционный надстрочный знак сочетаемости (две горизонтальные точки).",
-        geez_m1_t2: "Связь с кириллицей:", geez_m1_d2: "Это стопроцентный аналог хвостика <b>’ь</b>. Ставится над финальным слогом 3-го ряда, превращая его в ультра-мягкое, затухающее окончание (как в словах <i>сёунёлёс’ь</i>, <i>амын’ь</i>).",
-        geez_m2_d1: "Традиционный разделитель слов Гыыза (две вертикальные точки).",
-        geez_m2_d2: "Это стопроцентный аналог хвостика <b>’ъ</b>. Фиксируется сразу после слога, заставляя финальный согласный звук оборваться резко, жестко и с придыханием (как в словах <i>жирк’ъ</i>, <i>пьёт’ъ</i>).",
-        geez_rule_title: "Правило интеграции:",
-        geez_rule_desc: "Графика Гыыза полностью избавлена от чужеродных символов. Чтение священных текстов опирается исключительно на 4 рядов огласовок (где доминирует 3-й ряд — Ё) и два финальных модификатора хвостиков.",
-        gram_main_title: "Грамматический кодекс Валёрыйского Языка",
-        gram_main_desc: "Валёрыйская грамматика построена по аналитическому (болгарскому) типу. В ней полностью отсутствуют падежи и изменения корней слов. Все связи строятся на неизменяемых частицах, порядке слов и уникальной системе описания через маркер Ё / ኤ.",
-        gram_s1_title: "1. Порядок слов (Вместо падежей)",
-        gram_s1_desc: "Поскольку падежных окончаний нет, роль слова определяется его строгой позицией в предложении:",
-        gram_s1_form: "Кто/Что → Действие (Глагол) → Кого/Что (Объект) → Детали",
-        gram_ex_trans: "Перевод:",
-        gram_s2_title: "2. Система описаний (Прилагательные и Наречия)",
-        gram_s2_desc: "В языке нет отдельных прилагательных. Любое описание строится из общего абстрактного понятия, которое ставится СТРОГО ПОСЛЕ определяемого предмета с добавлением частицы описания Ё / Э.",
-        gram_s2_form: "Предмет + Понятие-описание + Частица Ё / Э",
-        gram_s3_title: "3. Указание степени (Много / Мало)",
-        gram_s3_desc: "Для усиления или ослабления признака перед существительным-описанием можно факультативно добавлять маркеры количества мнёгё / ምኔጌ или мёл`ъ / เมል፡.",
-        gram_s3_form: "Предмет + [мнёгё / мёл`ъ] + Понятие-описание + Частица Ё / Э",
-        gram_s4_title: "4. Времена глаголов (Частицы времени)",
-        gram_s4_desc: "Глаголы не спрягаются по лицам и числам. Время задаётся неизменными болгарскими частицами перед глаголом (бувё / ቡቬ — прошлое, бёдё / ቤዴ — будущее):",
-        gram_t_pres: "Настоящее (без частиц):", gram_t_past: "Прошедшее (бувё):", gram_t_fut: "Будущее (бёдё):",
-        gram_s5_title: "5. Служебные микро-слова (Предлоги отношений)",
-        gram_s5_desc: "Связь элементов в предложении осуществляется через короткие фиксированные предлоги:",
-        gram_p_na: "принадлежность (чей?): мёвё на Валёрй (Язык Валерия)",
-        gram_p_za: "цель (для): за вём`ь (Для нас)",
-        gram_p_u: "местонахождение (в/внутри): у академия (В академии)",
-        gram_p_vu: "направление (куда): ву академия (В академию)",
-        gram_p_sy: "соучастие (с/со): сы сябрё (С другом)",
-        dict_title: "Интерактивный Словарь",
-        dict_add: "Добавить слово",
-        dict_token: "Настройка токена для записи",
-        search_ph: "Поиск по Валёрыйскому, Русскому или Английскому...",
-        v_ph: "Слово на Валёрыйском (кириллица)", r_ph: "Перевод на Русский", e_ph: "Перевод на Английский",
-        btn_edit: "изменить", btn_delete: "удалить",
-        sync1: "Облако: синхронизация...", sync2: "Облако: подключение...", sync3: "Облако: база синхронизирована",
-        sync4: "Облако: ошибка получения данных", sync5: "Облако: локальный буфер активен", sync6: "Облако: сохранение...",
-        sync7: "⚠️ Изменения локальны. Введите токен для синхронизации в облако!",
-        sync8: "Облако: сохранено на GitHub!", sync9: "❌ Ошибка. Проверьте валидность токена.", sync10: "Облако: ошибка сети при сохранении.",
-        prompt_token: "Введите ваш GitHub Personal Access Token (с правами gist):", prompt_saved: "Токен сохранен! Попробуйте добавить слово.",
-        prompt_e_w: "Редактировать слово", prompt_e_r: "Редактировать русский", prompt_e_e: "Редактировать английский",
-        confirm_del: "Удалить это слово?"
-    },
-    en: {
-        site_title: "Academy of the Valoryan Language",
-        nav_home: "Home", nav_cyr: "Cyrillic", nav_geez: "Geez", nav_grammar: "Grammar", nav_dict: "Dictionary",
-        home_title: "Welcome to the Academy of the Valoryan Language!",
-        home_desc: "This is an interactive system for studying the unique phone-tics, grammar, and script of Valorya. Use the top menu to switch between alphabet analyses and the practical dictionary.",
-        cyr_title: "Cyrillic Alphabet (Valoryan Modification)",
-        cyr_desc: "Valoryan Cyrillic uses a concise Slavic base governed by strict phonetic rules. The classic letters 'О' and 'Е' are completely excluded — their functions are assumed by the language's main vowel.",
-        cyr_base_title: "Standard Letter Base",
-        cyr_base_desc: "Sounds that form the basis of Valoryan speech:",
-        cyr_hard_sign: "Ъ ъ — used exclusively as part of the ultra-hard tail",
-        cyr_soft_sign: "Ь ь — used exclusively as part of the ultra-soft tail",
-        cyr_twotone_title: "The 'Great Two-Vowels' and Tails (PHONETIC BASIS)",
-        cyr_yo_title: "The Valoryan Dominant.",
-        cyr_yo_desc: "Completely replaces the letters 'О', 'И', and 'Е' in absolutely all words and roots. Pronounced clearly, deeply, and with emphasis. This sound never affects the letter 'А'.",
-        cyr_yo_ex: "Examples:", cyr_yo_ex1: "(language/speech)", cyr_yo_ex2: "(well done)", cyr_yo_ex3: "(joyfully)",
-        cyr_y_title: "The Sound of Severity.", cyr_y_desc: "Gives the word firmness, weight, and a heavy, grounded sound.",
-        cyr_th_title: "Ultra-hard Tail.", cyr_th_desc: "Placed at the end of words. Signifies a sharp cessation of breath with a hard sound and a light exhale (thought fixation effect).",
-        cyr_ts_title: "Ultra-soft Tail.", cyr_ts_desc: "Makes the final consonant soft as fluff. The sound smoothly fades out.",
-        cyr_a_note: "(retains its classical sound)",
-        geez_title: "The Sacred Geez Script (Abugida)",
-        geez_desc: "The Valoryan Geez script is an <b>abugida</b>, where each symbol by default contains a consonant sound and its attached vowel. In the Valoryan tradition, this system is strictly synchronized with the modified Cyrillic.",
-        geez_c_title: "1. Base Consonant Stems",
-        geez_c_desc: "Main characters that change their form depending on the row's vocalization:",
-        geez_c_1: "guttural carrier (used if the word starts with a vowel)",
-        geez_v_title: "2. Vocalization System (Synchronization with Valoryan Phonetics)",
-        geez_v_desc: "Each consonant letter has exactly 7 rows of form changes, which now strictly correspond to Valoryan Cyrillic. Let's look at the system using the character <b>«ሀ» (kh)</b> as an example:",
-        geez_v_r1: "(1st row: base vowel <b>А</b>. Example: амын’ь)",
-        geez_v_r2: "(2nd row: base vowel <b>У</b>. Example: ёрбузуё)",
-        geez_v_r3: "(3rd row: main dominant — vowel <b>Ё</b>. Completely replaces the old sounds O, I, and E. Example: мёвё, сёунёлёс’ь)",
-        geez_v_r4: "(4th row: severe sound <b>Ы</b>)",
-        geez_ext_title: "3. Special Valoryan Geez Extensions",
-        geez_ext_desc: "To represent the final Cyrillic ultra-tails, original Geez punctuation marks are used as superscript and subscript modifiers:",
-        geez_m1_sym: "Modifier ፟ (Ultra-soft Tail)",
-        geez_m2_sym: "Modifier ፡ (Ultra-hard Tail)",
-        geez_m1_t1: "Geez sign:", geez_m1_d1: "Traditional superscript compatibility sign (two horizontal dots).",
-        geez_m1_t2: "Connection with Cyrillic:", geez_m1_d2: "This is a 100% analogue of the <b>’ь</b> tail. It is placed over the final syllable of the 3rd row, turning it into an ultra-soft, fading ending (as in the words <i>сёунёлёс’ь</i>, <i>амын’ь</i>).",
-        geez_m2_d1: "Traditional Geez word separator (two vertical dots).",
-        geez_m2_d2: "This is a 100% analogue of the <b>’ъ</b> tail. It is fixed immediately after the syllable, causing the final consonant sound to cut off sharply, harshly, and with an aspiration (as in the words <i>жирк’ъ</i>, <i>пьёт’ъ</i>).",
-        geez_rule_title: "Integration Rule:",
-        geez_rule_desc: "Geez graphics are completely free of alien symbols. Reading sacred texts relies exclusively on 4 rows of vocalizations (where the 3rd row — Ё dominates) and two final tail modifiers.",
-        gram_main_title: "Grammar Codex of the Valoryan Language",
-        gram_main_desc: "Valoryan grammar is built on an analytical (Bulgarian) model. It completely lacks cases and variations in word roots. All relations are built on invariant particles, word order, and a unique description system using the Ё / ኤ marker.",
-        gram_s1_title: "1. Word Order (Instead of Cases)",
-        gram_s1_desc: "Since there are no case endings, the role of a word is determined by its strict position in the sentence:",
-        gram_s1_form: "Subject → Action (Verb) → Object → Details",
-        gram_ex_trans: "Translation:",
-        gram_s2_title: "2. Description System (Adjectives and Adverbs)",
-        gram_s2_desc: "There are no separate adjectives in the language. Any description is built from a general abstract concept placed STRICTLY AFTER the noun with the addition of the Ё / ኤ description particle.",
-        gram_s2_form: "Noun + Concept-description + Particle Ё / ኤ",
-        gram_s3_title: "3. Specifying Degree (A lot / Not a lot)",
-        gram_s3_desc: "To strengthen or weaken a feature, the quantity markers мнёгё / ምኔጌ or мёл`ъ / ሜል፡ can optionally be added before the description noun.",
-        gram_s3_form: "Noun + [мнёгё / мёл`ъ] + Concept-description + Particle Ё / ኤ",
-        gram_s4_title: "4. Verb Tenses (Time Particles)",
-        gram_s4_desc: "Verbs do not conjugate by person or number. Tense is defined by invariant particles placed before the verb (бувё / ቡቬ for past, бёдё / ቤዴ for future):",
-        gram_t_pres: "Present (no particles):", gram_t_past: "Past (бувё):", gram_t_fut: "Future (бёдё):",
-        gram_s5_title: "5. Function Micro-words (Relation Prepositions)",
-        gram_s5_desc: "Connection of elements in a sentence is carried out through short fixed prepositions:",
-        gram_p_na: "belonging (whose?): мёвё на Валёрй (Language of Valeryi)",
-        gram_p_za: "goal (for): за вём`ь (For us)",
-        gram_p_u: "location (in/inside): у академия (In the academy)",
-        gram_p_vu: "direction (to): ву академия (To the academy)",
-        gram_p_sy: "co-participation (with): сы сябрё (With a friend)",
-        dict_title: "Interactive Dictionary",
-        dict_add: "Add Word",
-        dict_token: "Token Setup for Writing",
-        search_ph: "Search by Valoryan, Russian or English...",
-        v_ph: "Word in Valoryan (Cyrillic)", r_ph: "Translation into Russian", e_ph: "Translation into English",
-        btn_edit: "edit", btn_delete: "delete",
-        sync1: "Cloud: syncing...", sync2: "Cloud: connecting...", sync3: "Cloud: database synchronized",
-        sync4: "Cloud: data retrieval error", sync5: "Cloud: local buffer active", sync6: "Cloud: saving...",
-        sync7: "⚠️ Changes are local. Enter token to sync to the cloud!",
-        sync8: "Cloud: saved to GitHub!", sync9: "❌ Error. Check token validity.", sync10: "Cloud: network error while saving.",
-        prompt_token: "Enter your GitHub Personal Access Token (with gist permissions):", prompt_saved: "Token saved! Try adding a word.",
-        prompt_e_w: "Edit word", prompt_e_r: "Edit Russian", prompt_e_e: "Edit English",
-        confirm_del: "Delete this word?"
-    }
+// ─── TRANSLATIONS ─────────────────────────────────────────────────────
+const T = {
+  ru: {
+    heroTitle:       'Конвертер шиллинга',
+    heroLoading:     '⟳ Загрузка формулы цены...',
+    priceDynamic:    '⬡ Динамическая цена (M≥60)',
+    priceBase:       '◇ Базовая цена (M<60)',
+    badgeDynamic:    'Динамическая',
+    badgeBase:       'Базовая цена',
+    tabFrom:         'Шиллинг → Валюта',
+    tabTo:           'Валюта → Шиллинг',
+    lblFromShl:      'Сумма в шиллингах',
+    lblToShl:        'Из валюты',
+    lblFromCur:      'Сумма в валюте',
+    lblToCur:        'В валюту',
+    btnConvert:      'Конвертировать',
+    navConverter:    'Конвертер',
+    navRates:        'Курсы',
+    navFormula:      'Формула',
+    formulaTitle:    '⬡ Динамическая формула цены',
+    formulaDesc:     'Базовая: P₀ = (C_ink + C_paper) / N × 10 | Динамическая (с 60+ купюр): Pₙ = Pᵥ × (1 + α × (S − D / M))',
+    lblInk:          'C_ink — цена чернил (₸)',
+    lblPaper:        'C_paper — цена бумаги (₸)',
+    lblN:            'N — единиц на листе',
+    lblTotal:        'Всего напечатано (M)',
+    lblPrinted:      'Напечатано сегодня (D)',
+    lblWithdrawn:    'Изъято сегодня (S)',
+    lblAlpha:        'α — коэффициент',
+    lblPrev:         'Цена вчера Pᵥ (₸)',
+    btnCalc:         '⟳ Рассчитать',
+    btnSave:         '↑ Сохранить в Gist',
+    frLabel:         'Новая цена шиллинга',
+    ratesTitle:      'Все курсы',
+    searchPlh:       'Поиск...',
+    btnRecalc:       'Пересчитать',
+    thCode:          'Код',
+    thName:          'Валюта',
+    thAmount:        'Сумма',
+    footerNote:      'Данные обновляются в реальном времени',
+    topbarLoading:   'Загрузка...',
+    topbarUpdated:   'Обновлено: ',
+    modalTitle:      '🔑 Доступ администратора',
+    modalDesc:       'Для сохранения курса введите токен и ID Gist. Данные хранятся только в памяти браузера и не передаются никуда, кроме api.github.com.',
+    modalLabelToken: 'GitHub Personal Access Token',
+    modalHintToken:  'Создайте на <a href="https://github.com/settings/tokens" target="_blank">github.com/settings/tokens</a> — нужна галочка <b>gist</b>',
+    modalLabelGist:  'Gist ID',
+    modalHintGist:   'Создайте Gist на <a href="https://gist.github.com" target="_blank">gist.github.com</a> с файлом <b>shilling_rate.json</b>. ID — часть URL после вашего имени.',
+    modalCancel:     'Отмена',
+    modalOk:         'Сохранить',
+    modalSaving:     'Сохранение...',
+    modalErrFields:  'Введите токен и ID Gist',
+    statusSaving:    '⟳ Сохраняю в GitHub Gist...',
+    statusOk:        '✓ Курс сохранён в GitHub Gist',
+    statusErrNet:    '✗ Сетевая ошибка: ',
+    statusErrDB:     '✗ Ошибка: ',
+    statusLoading:   '⟳ Загружаю курс из GitHub Gist...',
+    statusLoaded:    '✓ Курс загружен из GitHub Gist: ',
+    statusErrGist:   '✗ Gist не найден или пустой — используется базовый расчёт',
+    statusNoGist:    'ℹ Gist ID не указан — введите его при сохранении',
+    shlWord:         'шиллинг',
+    shlWordGen:      'шиллингов',
+  },
+  en: {
+    heroTitle:       'Shilling Converter',
+    heroLoading:     '⟳ Loading price formula...',
+    priceDynamic:    '⬡ Dynamic price (M≥60)',
+    priceBase:       '◇ Base price (M<60)',
+    badgeDynamic:    'Dynamic',
+    badgeBase:       'Base price',
+    tabFrom:         'SHL → Currency',
+    tabTo:           'Currency → SHL',
+    lblFromShl:      'Amount in shillings',
+    lblToShl:        'From currency',
+    lblFromCur:      'Amount in currency',
+    lblToCur:        'To currency',
+    btnConvert:      'Convert',
+    navConverter:    'Converter',
+    navRates:        'Rates',
+    navFormula:      'Formula',
+    formulaTitle:    '⬡ Dynamic Price Formula',
+    formulaDesc:     'Base: P₀ = (C_ink + C_paper) / N × 10 | Dynamic (60+ notes): Pₙ = Pᵥ × (1 + α × (S − D / M))',
+    lblInk:          'C_ink — ink cost (₸)',
+    lblPaper:        'C_paper — paper cost (₸)',
+    lblN:            'N — units per sheet',
+    lblTotal:        'Total printed (M)',
+    lblPrinted:      'Printed today (D)',
+    lblWithdrawn:    'Withdrawn today (S)',
+    lblAlpha:        'α — coefficient',
+    lblPrev:         'Yesterday price Pᵥ (₸)',
+    btnCalc:         '⟳ Calculate',
+    btnSave:         '↑ Save to Gist',
+    frLabel:         'New shilling price',
+    ratesTitle:      'All rates',
+    searchPlh:       'Search...',
+    btnRecalc:       'Recalculate',
+    thCode:          'Code',
+    thName:          'Currency',
+    thAmount:        'Amount',
+    footerNote:      'Data updated in real time',
+    topbarLoading:   'Loading...',
+    topbarUpdated:   'Updated: ',
+    modalTitle:      '🔑 Administrator Access',
+    modalDesc:       'Enter your GitHub token and Gist ID to save the rate. Data is stored only in browser memory and sent nowhere except api.github.com.',
+    modalLabelToken: 'GitHub Personal Access Token',
+    modalHintToken:  'Create at <a href="https://github.com/settings/tokens" target="_blank">github.com/settings/tokens</a> — enable <b>gist</b> scope',
+    modalLabelGist:  'Gist ID',
+    modalHintGist:   'Create a Gist at <a href="https://gist.github.com" target="_blank">gist.github.com</a> with file <b>shilling_rate.json</b>. ID is the part of the URL after your username.',
+    modalCancel:     'Cancel',
+    modalOk:         'Save',
+    modalSaving:     'Saving...',
+    modalErrFields:  'Enter token and Gist ID',
+    statusSaving:    '⟳ Saving to GitHub Gist...',
+    statusOk:        '✓ Rate saved to GitHub Gist',
+    statusErrNet:    '✗ Network error: ',
+    statusErrDB:     '✗ Error: ',
+    statusLoading:   '⟳ Loading rate from GitHub Gist...',
+    statusLoaded:    '✓ Rate loaded from GitHub Gist: ',
+    statusErrGist:   '✗ Gist not found or empty — using base formula',
+    statusNoGist:    'ℹ No Gist ID saved — enter it when saving',
+    shlWord:         'shilling',
+    shlWordGen:      'shillings',
+  }
 };
 
-function changeLang(lang) {
-    currentLang = lang;
-    document.querySelectorAll('.lang-btn').forEach(btn => {
-        if(btn.innerText.toLowerCase() === lang) btn.classList.add('active-lang');
-        else btn.classList.remove('active-lang');
-    });
+let lang = localStorage.getItem('shl_lang') || 'ru';
 
-    // Перевод статических элементов по дата-атрибутам
-    document.querySelectorAll('[data-t]').forEach(el => {
-        const key = el.getAttribute('data-t');
-        if(translations[lang][key]) el.innerHTML = translations[lang][key];
-    });
+function t(key) { return T[lang][key] || T['ru'][key] || key; }
 
-    // Перевод плейсхолдеров
-    document.getElementById('search').placeholder = translations[lang].search_ph;
-    document.getElementById('v').placeholder = translations[lang].v_ph;
-    document.getElementById('r').placeholder = translations[lang].r_ph;
-    document.getElementById('e').placeholder = translations[lang].e_ph;
-
-    render();
-    updateSyncStatusText();
+function setLang(l) {
+  lang = l;
+  localStorage.setItem('shl_lang', l);
+  document.querySelectorAll('.lang-btn').forEach((b,i) => b.classList.toggle('active', ['ru','en'][i]===l));
+  applyTranslations();
 }
 
-function updateSyncStatusText() {
-    // Вспомогательная функция для обновления языка системных сообщений статуса синхронизации
-    const statusEl = document.getElementById("syncStatus");
-    const text = statusEl.innerText;
-    if (text.includes("синхронизация") || text.includes("syncing")) statusEl.innerText = translations[currentLang].sync1;
-    else if (text.includes("подключение") || text.includes("connecting")) statusEl.innerText = translations[currentLang].sync2;
-    else if (text.includes("синхронизирована") || text.includes("synchronized")) statusEl.innerText = translations[currentLang].sync3;
-    else if (text.includes("ошибка получения") || text.includes("retrieval error")) statusEl.innerText = translations[currentLang].sync4;
-    else if (text.includes("локальный буфер") || text.includes("local buffer")) statusEl.innerText = translations[currentLang].sync5;
-    else if (text.includes("сохранение") || text.includes("saving")) statusEl.innerText = translations[currentLang].sync6;
-    else if (text.includes("Изменения локальны") || text.includes("Changes are local")) statusEl.innerText = translations[currentLang].sync7;
-    else if (text.includes("сохранено на GitHub") || text.includes("saved to GitHub")) statusEl.innerText = translations[currentLang].sync8;
-    else if (text.includes("Проверьте валидность") || text.includes("Check token validity")) statusEl.innerText = translations[currentLang].sync9;
-    else if (text.includes("ошибка сети") || text.includes("network error")) statusEl.innerText = translations[currentLang].sync10;
+function applyTranslations() {
+  document.getElementById('hero-title').textContent        = t('heroTitle');
+  document.getElementById('nav-converter').textContent     = t('navConverter');
+  document.getElementById('nav-rates').textContent         = t('navRates');
+  document.getElementById('nav-formula').textContent       = t('navFormula');
+  document.getElementById('tab-from').textContent          = t('tabFrom');
+  document.getElementById('tab-to').textContent            = t('tabTo');
+  document.getElementById('btn-convert').textContent       = t('btnConvert');
+  document.getElementById('formula-title').textContent     = t('formulaTitle');
+  document.getElementById('formula-desc').textContent      = t('formulaDesc');
+  document.getElementById('lbl-ink').textContent           = t('lblInk');
+  document.getElementById('lbl-paper').textContent         = t('lblPaper');
+  document.getElementById('lbl-n').textContent             = t('lblN');
+  document.getElementById('lbl-total').textContent         = t('lblTotal');
+  document.getElementById('lbl-printed').textContent       = t('lblPrinted');
+  document.getElementById('lbl-withdrawn').textContent     = t('lblWithdrawn');
+  document.getElementById('lbl-alpha').textContent         = t('lblAlpha');
+  document.getElementById('lbl-prev').textContent          = t('lblPrev');
+  document.getElementById('btn-calc').textContent          = t('btnCalc');
+  document.getElementById('btn-save-gist').textContent     = t('btnSave');
+  document.getElementById('fr-label').textContent          = t('frLabel');
+  document.getElementById('search').placeholder            = t('searchPlh');
+  document.getElementById('btn-recalc').textContent        = t('btnRecalc');
+  document.getElementById('th-code').textContent           = t('thCode');
+  document.getElementById('th-name').textContent           = t('thName');
+  document.getElementById('th-amount').textContent         = t('thAmount');
+  document.getElementById('footer-note').textContent       = t('footerNote');
+  document.getElementById('modal-title').textContent       = t('modalTitle');
+  document.getElementById('modal-desc').textContent        = t('modalDesc');
+  document.getElementById('modal-label-token').textContent = t('modalLabelToken');
+  document.getElementById('modal-hint-token').innerHTML    = t('modalHintToken');
+  document.getElementById('modal-label-gist').textContent  = t('modalLabelGist');
+  document.getElementById('modal-hint-gist').innerHTML     = t('modalHintGist');
+  document.getElementById('modal-cancel-btn').textContent  = t('modalCancel');
+  document.getElementById('modal-ok-btn').textContent      = t('modalOk');
+  document.getElementById('rates-title').childNodes[0].textContent = t('ratesTitle') + ' — ';
+
+  // обновить метод цены
+  updatePriceMethodLabel();
+  // обновить режим конвертера
+  if (mode === 'from') {
+    document.getElementById('lbl-from').textContent = t('lblFromShl');
+    document.getElementById('lbl-to').textContent   = t('lblToCur');
+  } else {
+    document.getElementById('lbl-from').textContent = t('lblFromCur');
+    document.getElementById('lbl-to').textContent   = t('lblToShl');
+  }
 }
 
-function setToken() {
-    let token = prompt(translations[currentLang].prompt_token, localStorage.getItem("gist_token") || "");
-    if (token) {
-        localStorage.setItem("gist_token", token);
-        alert(translations[currentLang].prompt_saved);
-        loadFromServer();
+// ─── STATE ────────────────────────────────────────────────────────────
+let currentShlKzt = 0.51;
+let priceIsDynamic = false;
+let rates = {};
+let pendingSaveData = null;
+
+// ─── GIST ─────────────────────────────────────────────────────────────
+const GIST_API = 'https://api.github.com/gists/';
+const LS_GIST  = 'shl_gist_id';
+
+function getSavedGistId() { return localStorage.getItem(LS_GIST) || ''; }
+function saveGistId(id)   { localStorage.setItem(LS_GIST, id); }
+
+async function loadFromGist(gistId) {
+  if (!gistId) return null;
+  try {
+    const res = await fetch(GIST_API + gistId, { headers: { 'Accept': 'application/vnd.github.v3+json' } });
+    if (!res.ok) return null;
+    const gist = await res.json();
+    const file = gist.files && gist.files['shilling_rate.json'];
+    if (!file) return null;
+    return JSON.parse(file.content);
+  } catch(e) { return null; }
+}
+
+async function saveToGist(token, gistId, data) {
+  const content = JSON.stringify({
+    price_kzt: data.finalPrice,
+    base_price_kzt: data.p0,
+    is_dynamic: data.isDynamic,
+    c_ink: data.ink,
+    c_paper: data.paper,
+    n_per_sheet: data.n,
+    total_printed: data.total,
+    printed_today: data.D,
+    withdrawn_today: data.S,
+    alpha: data.alpha,
+    prev_price: data.pv,
+    updated_at: new Date().toISOString()
+  }, null, 2);
+
+  return fetch(GIST_API + gistId, {
+    method: 'PATCH',
+    headers: {
+      'Authorization': 'token ' + token,
+      'Content-Type': 'application/json',
+      'Accept': 'application/vnd.github.v3+json'
+    },
+    body: JSON.stringify({ files: { 'shilling_rate.json': { content } } })
+  });
+}
+
+// ─── CURRENCIES ───────────────────────────────────────────────────────
+const CURRENCIES = [
+  ["USD","Доллар США","US Dollar"],["EUR","Евро","Euro"],["GBP","Фунт стерлингов","British Pound"],
+  ["JPY","Иена","Japanese Yen"],["CNY","Юань","Chinese Yuan"],["KZT","Тенге","Kazakhstani Tenge"],
+  ["RUB","Рубль","Russian Ruble"],["UAH","Гривна","Ukrainian Hryvnia"],["PLN","Злотый","Polish Złoty"],
+  ["TRY","Лира турецкая","Turkish Lira"],["INR","Рупия индийская","Indian Rupee"],
+  ["BRL","Реал","Brazilian Real"],["MXN","Песо мекс.","Mexican Peso"],
+  ["CAD","Доллар кан.","Canadian Dollar"],["AUD","Доллар австр.","Australian Dollar"],
+  ["CHF","Франк швейц.","Swiss Franc"],["SEK","Крона шведская","Swedish Krona"],
+  ["NOK","Крона норвежская","Norwegian Krone"],["DKK","Крона датская","Danish Krone"],
+  ["NZD","Доллар НЗ","New Zealand Dollar"],["SGD","Доллар Сингапур","Singapore Dollar"],
+  ["HKD","Доллар Гонконг","Hong Kong Dollar"],["KRW","Вона","South Korean Won"],
+  ["IDR","Рупия индон.","Indonesian Rupiah"],["MYR","Ринггит","Malaysian Ringgit"],
+  ["THB","Бат","Thai Baht"],["PHP","Песо филип.","Philippine Peso"],["VND","Донг","Vietnamese Dong"],
+  ["ZAR","Рэнд","South African Rand"],["NGN","Найра","Nigerian Naira"],
+  ["KES","Шиллинг кен.","Kenyan Shilling"],["EGP","Фунт египет.","Egyptian Pound"],
+  ["SAR","Риял саудов.","Saudi Riyal"],["AED","Дирхам ОАЭ","UAE Dirham"],
+  ["QAR","Риял катар.","Qatari Riyal"],["ILS","Шекель","Israeli Shekel"],
+  ["PKR","Рупия пакист.","Pakistani Rupee"],["BDT","Така","Bangladeshi Taka"],
+  ["SOS","Шиллинг сомали","Somali Shilling"],["CZK","Крона чешская","Czech Koruna"],
+  ["HUF","Форинт","Hungarian Forint"],["RON","Лей","Romanian Leu"],["BGN","Лев","Bulgarian Lev"],
+  ["RSD","Динар серб.","Serbian Dinar"],["DZD","Динар алж.","Algerian Dinar"],
+  ["MAD","Дирхам марок.","Moroccan Dirham"],["GHS","Седи","Ghanaian Cedi"],
+  ["TZS","Шиллинг танз.","Tanzanian Shilling"],["UGX","Шиллинг уганд.","Ugandan Shilling"],
+  ["ETB","Быр","Ethiopian Birr"],["COP","Песо колумб.","Colombian Peso"],
+  ["PEN","Соль","Peruvian Sol"],["CLP","Песо чилийское","Chilean Peso"],
+  ["ARS","Песо аргент.","Argentine Peso"],["UYU","Песо уругв.","Uruguayan Peso"],
+  ["BYN","Рубль белорус.","Belarusian Ruble"],["GEL","Лари","Georgian Lari"],
+  ["AMD","Драм","Armenian Dram"],["AZN","Манат азерб.","Azerbaijani Manat"],
+  ["KGS","Сом","Kyrgyzstani Som"],["TJS","Сомони","Tajikistani Somoni"],
+  ["UZS","Сум","Uzbekistani Sum"],["MNT","Тугрик","Mongolian Tögrög"],
+  ["KWD","Динар кувейт.","Kuwaiti Dinar"],["BHD","Динар бахрейн.","Bahraini Dinar"],
+  ["OMR","Риал оман.","Omani Rial"],["JOD","Динар иордан.","Jordanian Dinar"],
+  ["IQD","Динар иракский","Iraqi Dinar"],["AFN","Афгани","Afghan Afghani"],
+  ["ISK","Крона исланд.","Icelandic Króna"],["MKD","Денар","Macedonian Denar"],
+  ["ALL","Лек","Albanian Lek"],["BAM","Марка Боснии","Bosnia Mark"],
+  ["MDL","Лей молд.","Moldovan Leu"],["GYD","Доллар Гайаны","Guyanese Dollar"],
+  ["JMD","Доллар ямайск.","Jamaican Dollar"],["MVR","Руфия","Maldivian Rufiyaa"],
+  ["NPR","Рупия Nepal","Nepalese Rupee"],["LKR","Рупия Шри-Ланки","Sri Lankan Rupee"],
+  ["TWD","Доллар тайв.","Taiwan Dollar"],["FJD","Доллар Фиджи","Fijian Dollar"],
+  ["MMK","Кьят","Myanmar Kyat"],["KHR","Риель","Cambodian Riel"],
+];
+
+const FALLBACK = {USD:1,EUR:0.92,GBP:0.79,JPY:149,CNY:7.24,KZT:450,RUB:88,UAH:37,PLN:4,TRY:32,INR:83,BRL:4.97,MXN:17,CAD:1.36,AUD:1.54,CHF:0.89,SEK:10.4,NOK:10.5,DKK:6.9,NZD:1.63,SGD:1.34,HKD:7.82,KRW:1330,IDR:15700,MYR:4.7,THB:35,PHP:56,VND:24500,ZAR:18.6,NGN:1500,KES:130,EGP:31,SAR:3.75,AED:3.67,QAR:3.64,ILS:3.7,PKR:280,BDT:110,SOS:571,CZK:23,HUF:360,RON:4.6,BGN:1.8,RSD:108,DZD:135,MAD:10,GHS:12,TZS:2500,UGX:3800,ETB:56,COP:3900,PEN:3.7,CLP:900,ARS:850,UYU:38,BYN:3.2,GEL:2.7,AMD:387,AZN:1.7,KGS:89,TJS:10.9,UZS:12500,MNT:3400,KWD:0.31,BHD:0.38,OMR:0.38,JOD:0.71,IQD:1310,AFN:70,ISK:138,MKD:57,ALL:100,BAM:1.8,MDL:17.8,GYD:209,JMD:155,MVR:15.4,NPR:133,LKR:328,TWD:31,FJD:2.2,MMK:2100,KHR:4100};
+
+function r(code) { return rates[code] || FALLBACK[code] || 1; }
+function shlToUSD(shl) { return shl * currentShlKzt / r('KZT'); }
+function usdToShl(usd) { return usd * r('KZT') / currentShlKzt; }
+function fmt(n) {
+  if (n >= 1000) return n.toLocaleString('ru-RU', {maximumFractionDigits:2});
+  if (n >= 1) return parseFloat(n.toFixed(4)).toLocaleString('ru-RU');
+  return parseFloat(n.toFixed(6)).toString();
+}
+
+// ─── FORMULAS ─────────────────────────────────────────────────────────
+function calcBasePrice(ink, paper, n) { return (ink + paper) / n * 10; }
+function calcDynamicPrice(pv, alpha, S, D, M) {
+  if (M < 60) return null;
+  return pv * (1 + alpha * (S - D / M));
+}
+
+function calcFormula() {
+  const ink   = parseFloat(document.getElementById('f-ink').value) || 5;
+  const paper = parseFloat(document.getElementById('f-paper').value) || 5.2;
+  const n     = parseFloat(document.getElementById('f-n').value) || 200;
+  const total = parseFloat(document.getElementById('f-total').value) || 0;
+  const D     = parseFloat(document.getElementById('f-printed').value) || 0;
+  const S     = parseFloat(document.getElementById('f-withdrawn').value) || 0;
+  const alpha = parseFloat(document.getElementById('f-alpha').value) || 0.2;
+  const pv    = parseFloat(document.getElementById('f-prev').value) || 0.51;
+
+  const p0 = calcBasePrice(ink, paper, n);
+  const dynPrice = calcDynamicPrice(pv, alpha, S, D, total);
+
+  let finalPrice, formulaText, isDynamic;
+  if (dynPrice !== null) {
+    finalPrice = dynPrice; isDynamic = true;
+    formulaText = `Pₙ = ${fmt(pv)} × (1 + ${alpha} × (${S} − ${D}/${total})) = ${fmt(finalPrice)} ₸`;
+  } else {
+    finalPrice = p0; isDynamic = false;
+    formulaText = `P₀ = (${ink} + ${paper}) / ${n} × 10 = ${fmt(p0)} ₸`;
+  }
+
+  document.getElementById('fr-val').textContent = fmt(finalPrice) + ' ₸';
+  document.getElementById('fr-formula').textContent = formulaText;
+  document.getElementById('formula-result').classList.add('show');
+
+  currentShlKzt = finalPrice;
+  priceIsDynamic = isDynamic;
+  updateRateDisplay();
+
+  return { finalPrice, isDynamic, p0, ink, paper, n, total, D, S, alpha, pv };
+}
+
+// ─── MODAL ────────────────────────────────────────────────────────────
+function openSaveModal() {
+  pendingSaveData = calcFormula();
+  // предзаполнить сохранённый Gist ID
+  const savedId = getSavedGistId();
+  if (savedId) document.getElementById('modal-gist').value = savedId;
+  document.getElementById('modal-err').style.display = 'none';
+  document.getElementById('auth-modal').classList.add('show');
+  document.getElementById('modal-token').focus();
+}
+function closeModal() {
+  document.getElementById('auth-modal').classList.remove('show');
+  pendingSaveData = null;
+}
+document.getElementById('auth-modal').addEventListener('click', function(e) {
+  if (e.target === this) closeModal();
+});
+
+async function confirmSave() {
+  const token  = document.getElementById('modal-token').value.trim();
+  const gistId = document.getElementById('modal-gist').value.trim();
+  const errEl  = document.getElementById('modal-err');
+
+  if (!token || !gistId) {
+    errEl.textContent = t('modalErrFields');
+    errEl.style.display = 'block';
+    return;
+  }
+  errEl.style.display = 'none';
+
+  const btn = document.getElementById('modal-ok-btn');
+  btn.textContent = t('modalSaving');
+  btn.disabled = true;
+
+  const statusEl = document.getElementById('db-status');
+  statusEl.className = 'db-status show info';
+  statusEl.textContent = t('statusSaving');
+
+  try {
+    const res = await saveToGist(token, gistId, pendingSaveData);
+    if (res.ok) {
+      saveGistId(gistId); // запомнить ID для будущих загрузок
+      closeModal();
+      statusEl.className = 'db-status show ok';
+      statusEl.textContent = t('statusOk') + ' (' + new Date().toLocaleTimeString('ru-RU') + ')';
+    } else {
+      const err = await res.json().catch(() => ({}));
+      errEl.textContent = t('statusErrDB') + (err.message || res.status);
+      errEl.style.display = 'block';
+      statusEl.className = 'db-status';
     }
+  } catch(e) {
+    errEl.textContent = t('statusErrNet') + e.message;
+    errEl.style.display = 'block';
+    statusEl.className = 'db-status';
+  }
+
+  btn.textContent = t('modalOk');
+  btn.disabled = false;
 }
 
-async function loadFromServer() {
-    const statusEl = document.getElementById("syncStatus");
-    dict = JSON.parse(localStorage.getItem("dict") || "[]");
-    render();
+// ─── UI ───────────────────────────────────────────────────────────────
+function updatePriceMethodLabel() {
+  const label = priceIsDynamic ? t('priceDynamic') : t('priceBase');
+  const methodEl = document.getElementById('price-method-label');
+  methodEl.textContent = label;
+  methodEl.className = 'price-method-label ' + (priceIsDynamic ? 'dynamic' : 'base');
+  document.getElementById('price-mode-badge').textContent = priceIsDynamic ? t('badgeDynamic') : t('badgeBase');
+}
 
-    try {
-        statusEl.innerText = translations[currentLang].sync2;
-        statusEl.style.color = "var(--text-muted)";
-        
-        const response = await fetch(`https://api.github.com/gists/${GIST_ID}`);
-        if (response.ok) {
-            const gistData = await response.json();
-            
-            if (gistData.files && gistData.files[FILE_NAME]) {
-                const fileContent = gistData.files[FILE_NAME].content;
-                try {
-                    dict = JSON.parse(fileContent || "[]");
-                } catch(e) {
-                    console.error("Ошибка парсинга JSON из Gist, сброс до пустого массива", e);
-                    dict = [];
-                }
-            } else {
-                dict = [];
-            }
+function updateRateDisplay() {
+  const usdPerShl = currentShlKzt / r('KZT');
+  document.getElementById('hdr-rate').textContent = fmt(currentShlKzt) + ' KZT · ' + fmt(usdPerShl) + ' USD';
+  document.getElementById('hero-kzt').textContent = fmt(currentShlKzt);
+  document.getElementById('hero-usd').textContent = fmt(usdPerShl);
+  document.getElementById('footer-rate').textContent = fmt(currentShlKzt);
+  updatePriceMethodLabel();
+  document.getElementById('hdr-time').textContent = t('topbarUpdated') + new Date().toLocaleTimeString('ru-RU');
+  refreshAll();
+}
 
-            localStorage.setItem("dict", JSON.stringify(dict));
-            render();
-            statusEl.innerText = translations[currentLang].sync3;
-            statusEl.style.color = "var(--accent)";
-        } else {
-            statusEl.innerText = translations[currentLang].sync4;
-            statusEl.style.color = "var(--accent-danger)";
-        }
-    } catch (e) {
-        console.error(e);
-        statusEl.innerText = translations[currentLang].sync5;
-        statusEl.style.color = "var(--text-muted)";
+// ─── CONVERTER ────────────────────────────────────────────────────────
+let mode = 'from';
+function setMode(m) {
+  mode = m;
+  document.querySelectorAll('.conv-tab').forEach((b,i) => b.classList.toggle('active', ['from','to'][i]===m));
+  if (m==='from') {
+    document.getElementById('lbl-from').textContent = t('lblFromShl');
+    document.getElementById('lbl-to').textContent   = t('lblToCur');
+  } else {
+    document.getElementById('lbl-from').textContent = t('lblFromCur');
+    document.getElementById('lbl-to').textContent   = t('lblToShl');
+  }
+  document.getElementById('result').classList.remove('show');
+}
+function swapMode() { setMode(mode === 'from' ? 'to' : 'from'); }
+
+function doConvert() {
+  const amt = parseFloat(document.getElementById('amount').value);
+  if (isNaN(amt) || amt < 0) return;
+  const code = document.getElementById('cur-sel').value;
+  const cur = CURRENCIES.find(c=>c[0]===code);
+  const name = cur ? (lang === 'en' ? cur[2] : cur[1]) : code;
+  const usdPerShl = currentShlKzt / r('KZT');
+  let mainText, subText, rateText;
+  if (mode === 'from') {
+    const val = shlToUSD(amt) * r(code);
+    mainText = `${fmt(val)} ${code}`;
+    subText  = `${fmt(amt)} SHL → ${fmt(val)} ${name}`;
+    rateText = `1 SHL = ${fmt(currentShlKzt)} KZT · ${fmt(usdPerShl)} USD`;
+  } else {
+    const val = usdToShl(amt / r(code));
+    mainText = `${fmt(val)} SHL`;
+    subText  = `${fmt(amt)} ${name} → ${fmt(val)} SHL`;
+    rateText = `1 ${code} = ${fmt(usdToShl(1/r(code)))} SHL`;
+  }
+  document.getElementById('res-main').textContent = mainText;
+  document.getElementById('res-sub').textContent  = subText;
+  document.getElementById('res-rate').textContent = rateText;
+  document.getElementById('result').classList.add('show');
+}
+
+// ─── RATES TABLE ──────────────────────────────────────────────────────
+let allData = [];
+function refreshAll() {
+  const amt = parseFloat(document.getElementById('tbl-amt').value) || 1;
+  document.getElementById('tbl-base-label').textContent = `${fmt(amt)} SHL`;
+  allData = CURRENCIES.map(([code,nameRu,nameEn]) => ({ code, nameRu, nameEn, val: shlToUSD(amt) * r(code) }));
+  filterRates();
+}
+function filterRates() {
+  const q = document.getElementById('search').value.toLowerCase();
+  const rows = allData.filter(d =>
+    d.code.toLowerCase().includes(q) ||
+    d.nameRu.toLowerCase().includes(q) ||
+    d.nameEn.toLowerCase().includes(q)
+  );
+  document.getElementById('rates-body').innerHTML = rows.map(({code,nameRu,nameEn,val}) => {
+    const name = lang === 'en' ? nameEn : nameRu;
+    return `<tr><td class="td-code">${code}</td><td class="td-name">${name}</td><td class="td-val">${fmt(val)}</td></tr>`;
+  }).join('');
+}
+
+// populate currency select
+function populateCurrencySelect() {
+  const sel = document.getElementById('cur-sel');
+  sel.innerHTML = '';
+  CURRENCIES.forEach(([c, nameRu, nameEn]) => {
+    const o = document.createElement('option');
+    o.value = c;
+    o.textContent = `${c} — ${lang === 'en' ? nameEn : nameRu}`;
+    sel.appendChild(o);
+  });
+}
+
+document.getElementById('amount').addEventListener('keydown', e => { if(e.key==='Enter') doConvert(); });
+document.getElementById('tbl-amt').addEventListener('keydown', e => { if(e.key==='Enter') refreshAll(); });
+
+// ─── INIT ─────────────────────────────────────────────────────────────
+async function init() {
+  // применить язык из localStorage
+  document.querySelectorAll('.lang-btn').forEach((b,i) => b.classList.toggle('active', ['ru','en'][i]===lang));
+  populateCurrencySelect();
+  applyTranslations();
+
+  // Курсы валют
+  try {
+    const res = await fetch('https://api.exchangerate-api.com/v4/latest/USD');
+    const d = await res.json();
+    rates = d.rates;
+  } catch(e) { rates = FALLBACK; }
+
+  // Gist ID — берём из localStorage (запомнен после первого сохранения)
+  const gistId = getSavedGistId();
+  const statusEl = document.getElementById('db-status');
+
+  if (gistId) {
+    statusEl.className = 'db-status show info';
+    statusEl.textContent = t('statusLoading');
+
+    const data = await loadFromGist(gistId);
+    if (data && data.price_kzt) {
+      currentShlKzt  = data.price_kzt;
+      priceIsDynamic = data.is_dynamic || false;
+
+      if (data.c_ink)           document.getElementById('f-ink').value       = data.c_ink;
+      if (data.c_paper)         document.getElementById('f-paper').value     = data.c_paper;
+      if (data.n_per_sheet)     document.getElementById('f-n').value         = data.n_per_sheet;
+      if (data.total_printed)   document.getElementById('f-total').value     = data.total_printed;
+      if (data.printed_today)   document.getElementById('f-printed').value   = data.printed_today;
+      if (data.withdrawn_today) document.getElementById('f-withdrawn').value = data.withdrawn_today;
+      if (data.alpha)           document.getElementById('f-alpha').value     = data.alpha;
+      if (data.prev_price)      document.getElementById('f-prev').value      = data.prev_price;
+
+      const upd = data.updated_at ? new Date(data.updated_at).toLocaleString('ru-RU') : '';
+      statusEl.className = 'db-status show ok';
+      statusEl.textContent = t('statusLoaded') + upd;
+    } else {
+      currentShlKzt  = calcBasePrice(5, 5.2, 200);
+      priceIsDynamic = false;
+      statusEl.className = 'db-status show err';
+      statusEl.textContent = t('statusErrGist');
     }
+  } else {
+    currentShlKzt  = calcBasePrice(5, 5.2, 200);
+    priceIsDynamic = false;
+    statusEl.className = 'db-status show info';
+    statusEl.textContent = t('statusNoGist');
+  }
+
+  updateRateDisplay();
+
+  // при смене языка обновить также и select с валютами
+  const origSetLang = setLang;
+  window.setLang = function(l) {
+    origSetLang(l);
+    populateCurrencySelect();
+    filterRates();
+  };
 }
 
-async function save(){
-    localStorage.setItem("dict", JSON.stringify(dict));
-    render();
-
-    const statusEl = document.getElementById("syncStatus");
-    const token = localStorage.getItem("gist_token");
-
-    if (!token) {
-        statusEl.innerText = translations[currentLang].sync7;
-        statusEl.style.color = "var(--accent-danger)";
-        return;
-    }
-
-    try {
-        statusEl.innerText = translations[currentLang].sync6;
-        statusEl.style.color = "var(--text-muted)";
-        
-        const response = await fetch(`https://api.github.com/gists/${GIST_ID}`, {
-            method: "PATCH",
-            headers: {
-                "Authorization": `Bearer ${token}`,
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({
-                files: {
-                    [FILE_NAME]: {
-                        content: JSON.stringify(dict, null, 2)
-                    }
-                }
-            })
-        });
-        
-        if (response.ok) {
-            statusEl.innerText = translations[currentLang].sync8;
-            statusEl.style.color = "var(--accent)";
-        } else {
-            statusEl.innerText = translations[currentLang].sync9;
-            statusEl.style.color = "var(--accent-danger)";
-        }
-    } catch (e) {
-        console.error(e);
-        statusEl.innerText = translations[currentLang].sync10;
-        statusEl.style.color = "var(--accent-danger)";
-    }
-}
-
-function addWord(){
-    if(!v.value) return;
-    dict.push({v:v.value, r:r.value, e:e.value});
-    v.value = ""; r.value = ""; e.value = "";
-    save();
-}
-
-function editWord(i){
-    let nv = prompt(translations[currentLang].prompt_e_w, dict[i].v);
-    let nr = prompt(translations[currentLang].prompt_e_r, dict[i].r);
-    let ne = prompt(translations[currentLang].prompt_e_e, dict[i].e);
-    if(nv) dict[i].v = nv;
-    if(nr) dict[i].r = nr;
-    if(ne) dict[i].e = ne;
-    save();
-}
-
-function deleteWord(i){
-    if(confirm(translations[currentLang].confirm_del)) {
-        dict.splice(i, 1);
-        save();
-    }
-}
-
-function render(){
-    const query = document.getElementById('search').value.toLowerCase().trim();
-    const listEl = document.getElementById('list');
-    
-    // Мультиязычный поиск: ищет по валёрыйскому (v), русскому (r) и английскому (e) одновременно
-    const filteredDict = dict.map((d, i) => ({ ...d, originalIndex: i })).filter(d => {
-        return d.v.toLowerCase().includes(query) || 
-               d.r.toLowerCase().includes(query) || 
-               d.e.toLowerCase().includes(query);
-    });
-
-    listEl.innerHTML = filteredDict.map(d =>
-        `<p>
-        <span><b>${d.v}</b> — ${d.r} / ${d.e}</span>
-        <div class="actions-wrapper">
-        <button class="small" onclick="editWord(${d.originalIndex})">${translations[currentLang].btn_edit}</button>
-        <button class="small" onclick="deleteWord(${d.originalIndex})">${translations[currentLang].btn_delete}</button>
-        </div>
-        </p>`
-    ).join("");
-}
-
-// Первый запуск при загрузке страницы
-changeLang('ru');
-loadFromServer();
+init();
 </script>
-
 </body>
 </html>
